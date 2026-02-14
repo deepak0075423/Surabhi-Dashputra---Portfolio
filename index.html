@@ -34,8 +34,13 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#music">Music</a></li>
+            <li><a href="#music">Popular</a></li>
             <li><a href="#films">Films</a></li>
+            <li><a href="#news">News</a></li>
+            <li><a href="#youtube">YouTube</a></li>
+            <li><a href="#jingles">Jingles</a></li>
+            <li><a href="#reels">Reels</a></li>
+            <li><a href="#gallery">Photos</a></li>
             <li><a href="#academy">Academy</a></li>
             <li><a href="#contact">Connect</a></li>
         </ul>
@@ -43,8 +48,26 @@
 </nav>
 <div class="nav-overlay" id="navOverlay"></div>
 
-<!-- ─── HERO ─── -->
+<!-- ─── 1. BANNER (HERO) ─── -->
 <section id="home" class="hero">
+    <div class="hero-notes" aria-hidden="true">
+        <span class="float-note n1">♪</span>
+        <span class="float-note n2">♫</span>
+        <span class="float-note n3">♬</span>
+        <span class="float-note n4">♪</span>
+        <span class="float-note n5">♫</span>
+        <span class="float-note n6">♪</span>
+        <span class="float-note n7">♬</span>
+        <span class="float-note n8">♫</span>
+        <span class="float-note n9">♪</span>
+        <span class="float-note n10">♬</span>
+        <span class="float-note n11">♪</span>
+        <span class="float-note n12">♫</span>
+        <span class="float-note n13">♬</span>
+        <span class="float-note n14">♪</span>
+        <span class="float-note n15">♫</span>
+        <span class="float-note n16">♬</span>
+    </div>
     <div class="hero-wrap">
         <div class="hero-content">
             <span class="badge reveal">✦ Singer · Content Creator · Musician</span>
@@ -73,23 +96,19 @@
         </div>
 
         <!-- Hero right visual -->
-        <div class="hero-visual reveal">
-            <div class="hero-ring">
-                <div class="hero-img-wrap">
-                    <!-- REPLACE: swap this div with <img src="your-photo.jpg" alt="Surabhi Dashputra"> -->
-                    <div class="hero-placeholder"><img src="images/image3.jpeg" alt="image1"></div>
-                </div>
-            </div>
-            <span class="float-note n1">♪</span>
-            <span class="float-note n2">♫</span>
-            <span class="float-note n3">♬</span>
-            <span class="float-note n4">♪</span>
-        </div>
+	        <div class="hero-visual reveal">
+	            <div class="hero-ring">
+	                <div class="hero-img-wrap">
+	                    <!-- REPLACE: swap this div with <img src="your-photo.jpg" alt="Surabhi Dashputra"> -->
+	                    <div class="hero-placeholder"><img src="images/image3.png" alt="image1"></div>
+	                </div>
+	            </div>
+	        </div>
     </div>
     <div class="scroll-hint"><span>Scroll</span><i class="fas fa-chevron-down"></i></div>
 </section>
 
-<!-- ─── ABOUT ─── -->
+<!-- ─── 2. ABOUT ─── -->
 <section id="about" class="section about">
     <div class="container">
         <div class="sec-head reveal">
@@ -132,30 +151,178 @@
     </div>
 </section>
 
-<!-- ─── MUSIC ─── -->
+<!-- ─── 3. POPULAR (MUSIC) ─── -->
 <section id="music" class="section music">
     <div class="container">
         <div class="sec-head reveal">
-            <span class="sec-tag">Discography</span>
-            <h2>Popular <span class="highlight">Tracks</span></h2>
+            <span class="sec-tag">Music</span>
+            <h2>Spotify <span class="highlight">Playlist</span></h2>
             <div class="divider"></div>
         </div>
         <div class="music-grid">
-            <!-- Spotify Embed -->
+            <!-- Player (Left) -->
             <div class="spotify-wrap reveal">
-                <iframe src="https://open.spotify.com/embed/artist/5OAB0WGU0xp8UY2lihPD3F" width="100%" height="380" frameborder="0" allowtransparency="true" allow="autoplay; encrypted-media"></iframe>
+                <div class="np-head">
+                    <span class="np-ico"><i class="fas fa-signal"></i></span>
+                    <span class="np-txt">Now Playing</span>
+                </div>
+                <iframe src="https://open.spotify.com/embed/track/3TXjNRh2C9ybqG2ZYDrgh5?utm_source=generator&theme=0" width="100%" height="420" frameborder="0" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
-            <!-- Track List - Dynamically Generated -->
+
+            <!-- Playlist (Right) -->
             <div class="tracks reveal" id="tracksSection">
-                <h3>Top Streaming Hits</h3>
-                <div id="trackList"></div>
-                <a href="https://open.spotify.com/artist/5OAB0WGU0xp8UY2lihPD3F" target="_blank" rel="noopener" class="btn btn-outline">View All on Spotify <i class="fab fa-spotify"></i></a>
+                <div class="pl-head">
+                    <h3>Playlist</h3>
+                    <div class="pl-tabs" role="tablist" aria-label="Playlist categories">
+                        <button class="pl-tab active" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
+                        <button class="pl-tab" type="button" data-filter="films" role="tab" aria-selected="false">Films &amp; Series</button>
+                        <button class="pl-tab" type="button" data-filter="independent" role="tab" aria-selected="false">Independent</button>
+                    </div>
+                </div>
+                <div id="trackList" class="pl-list" aria-label="Song list"></div>
+                <a href="https://open.spotify.com/artist/5OAB0WGU0xp8UY2lihPD3F" target="_blank" rel="noopener" class="btn btn-outline">Open Artist on Spotify <i class="fab fa-spotify"></i></a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ─── YOUTUBE ─── -->
+<!-- ─── 4. FILMS & TV SOUNDTRACKS ─── -->
+<section id="films" class="section films">
+    <div class="films-bg-decor">
+        <i class="fas fa-film films-float-ico f1"></i>
+        <i class="fas fa-tv films-float-ico f2"></i>
+        <i class="fas fa-clapperboard films-float-ico f3"></i>
+    </div>
+    <div class="container">
+        <div class="sec-head reveal">
+            <span class="sec-tag"><i class="fas fa-clapperboard"></i> Filmography</span>
+            <h2>Films & TV <span class="highlight">Soundtracks</span></h2>
+            <p class="sec-sub">Lending soulful vocals to the silver screen and beyond</p>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="films-tabs reveal">
+            <button class="ft-btn active" data-tab="films">
+                <i class="fas fa-film"></i> Films
+            </button>
+            <button class="ft-btn" data-tab="tv">
+                <i class="fas fa-tv"></i> TV Series
+            </button>
+        </div>
+
+        <!-- Films Grid with Scroll -->
+        <div class="films-grid-wrap" id="filmsGridWrap">
+            <button class="films-scroll-btn films-scroll-prev" id="filmsPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+            <button class="films-scroll-btn films-scroll-next" id="filmsNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        <div class="films-grid" id="filmsGrid">
+            <div class="film-card reveal" data-type="films">
+                <div class="film-top" style="background:linear-gradient(135deg,#667eea,#764ba2)">
+                    <img src="images/image4.jpeg" alt="Judgementall Hai Kya"><span class="film-yr">2019</span>
+                    <span class="film-type-badge"><i class="fas fa-film"></i></span>
+                </div>
+                <div class="film-body">
+                    <h3>Judgementall Hai Kya</h3>
+                    <p>Surabhi's evocative vocals bring emotion to this psychological thriller's captivating soundtrack.</p>
+                    <span class="film-genre">Bollywood Thriller</span>
+                </div>
+            </div>
+            <div class="film-card reveal" data-type="films">
+                <div class="film-top" style="background:linear-gradient(135deg,#f093fb,#f5576c)">
+                    <img src="images/image5.jpeg" alt="Titoo MBA"><span class="film-yr">Hindi</span>
+                    <span class="film-type-badge"><i class="fas fa-film"></i></span>
+                </div>
+                <div class="film-body">
+                    <h3>Titoo MBA</h3>
+                    <p>Her melodic rendition adds warmth and romance to this heartfelt cinematic story.</p>
+                    <span class="film-genre">Hindi Cinema</span>
+                </div>
+            </div>
+            <div class="film-card reveal" data-type="films">
+                <div class="film-top" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">
+                    <img src="images/image6.jpeg" alt="DHAAGE"><span class="film-yr">Classic</span>
+                    <span class="film-type-badge"><i class="fas fa-film"></i></span>
+                </div>
+                <div class="film-body">
+                    <h3>DHAAGE</h3>
+                    <p>Contributing to the legacy soundtrack of this beloved film, showcasing her vocal versatility.</p>
+                    <span class="film-genre">Bollywood Classic</span>
+                </div>
+            </div>
+
+            <!-- TV Series Cards -->
+            <div class="film-card reveal" data-type="tv" style="display:none">
+                <div class="film-top" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">
+                    <div class="film-placeholder-top"><i class="fas fa-tv"></i></div>
+                    <span class="film-yr">Series</span>
+                    <span class="film-type-badge tv-badge"><i class="fas fa-tv"></i></span>
+                </div>
+                <div class="film-body">
+                    <h3>TV Series Soundtrack</h3>
+                    <p>Captivating title tracks and background scores that set the tone for episodic storytelling.</p>
+                    <span class="film-genre">Television Series</span>
+                </div>
+            </div>
+            <div class="film-card reveal" data-type="tv" style="display:none">
+                <div class="film-top" style="background:linear-gradient(135deg,#ffecd2,#fcb69f)">
+                    <div class="film-placeholder-top"><i class="fas fa-satellite-dish"></i></div>
+                    <span class="film-yr">OTT</span>
+                    <span class="film-type-badge tv-badge"><i class="fas fa-tv"></i></span>
+                </div>
+                <div class="film-body">
+                    <h3>Web Series Score</h3>
+                    <p>Original compositions for digital-first content on leading OTT platforms.</p>
+                    <span class="film-genre">OTT / Web Series</span>
+                </div>
+            </div>
+            <div class="film-card reveal" data-type="tv" style="display:none">
+                <div class="film-top" style="background:linear-gradient(135deg,#89f7fe,#66a6ff)">
+                    <div class="film-placeholder-top"><i class="fas fa-podcast"></i></div>
+                    <span class="film-yr">Show</span>
+                    <span class="film-type-badge tv-badge"><i class="fas fa-tv"></i></span>
+                </div>
+                <div class="film-body">
+                    <h3>Reality Show Theme</h3>
+                    <p>Energetic theme music and vocal performances for popular television shows.</p>
+                    <span class="film-genre">Reality TV</span>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── 5. NEWS ─── -->
+<section id="news" class="section news-sec">
+    <div class="news-bg-decor">
+        <i class="fas fa-newspaper news-float-ico nf1"></i>
+        <i class="fas fa-rss news-float-ico nf2"></i>
+    </div>
+
+    <div class="container">
+        <div class="sec-head reveal">
+            <span class="sec-tag"><i class="fas fa-newspaper"></i> Latest Updates</span>
+            <h2>In the <span class="highlight">News</span></h2>
+            <p class="sec-sub">Press features, releases & milestones</p>
+            <div class="divider"></div>
+        </div>
+
+        <!-- Dynamic News Timeline -->
+        <div class="news-timeline reveal" id="newsTimeline">
+            <!-- Rendered dynamically by JS -->
+        </div>
+
+        <!-- News Load More -->
+        <div class="news-footer reveal">
+            <span class="news-count" id="newsCount"></span>
+            <button class="btn btn-news-more" id="newsLoadMore">
+                <i class="fas fa-newspaper"></i> Load More News
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ─── 6. YOUTUBE ─── -->
 <section id="youtube" class="section youtube-sec">
     <!-- Floating decoration -->
     <div class="yt-bg-decor">
@@ -174,12 +341,12 @@
 
         <!-- YouTube Videos Horizontal Scroll -->
         <div class="yt-scroll-wrap reveal">
-            <button class="yt-nav yt-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+            <button type="button" class="yt-nav yt-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
             <div class="yt-scroll" id="ytGrid">
                 <!-- Video 1 -->
                 <div class="yt-video-card">
                     <div class="yt-video-wrap">
-                        <iframe src="https://www.youtube.com/embed/dKnkzcl80jw?si=jfuPVQoxanfhbRG7" title="Surabhi Dashputra Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/dKnkzcl80jw?si=jfuPVQoxanfhbRG7&enablejsapi=1" title="Surabhi Dashputra Showreel" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="yt-video-info">
                         <span class="yt-video-title">Surabhi Dashputra Showreel</span>
@@ -188,7 +355,7 @@
                 <!-- Video 2 -->
                 <div class="yt-video-card">
                     <div class="yt-video-wrap">
-                        <iframe src="https://www.youtube.com/embed/yr4YkeL__Bo?si=eLjgdo7WlmjX4rkY" title="Do not miss it!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/yr4YkeL__Bo?si=eLjgdo7WlmjX4rkY&enablejsapi=1" title="Do not miss it!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="yt-video-info">
                         <span class="yt-video-title">Do not miss it!</span>
@@ -197,7 +364,7 @@
                 <!-- Video 3 -->
                 <div class="yt-video-card">
                     <div class="yt-video-wrap">
-                        <iframe src="https://www.youtube.com/embed/8ggJNCvnA2s?si=prg1XDnbLYEexTP0" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/8ggJNCvnA2s?si=prg1XDnbLYEexTP0&enablejsapi=1" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="yt-video-info">
                         <span class="yt-video-title">Sufi Mashup</span>
@@ -206,14 +373,14 @@
                 <!-- Video 4 -->
                 <div class="yt-video-card">
                     <div class="yt-video-wrap">
-                        <iframe src="https://www.youtube.com/embed/F_yvcXjf0RM?si=l8XSzG3Y5VEfARXi" title="‘Ghazalishक़ Showreel’ | Love For Ghazals | Ek Shaam Ghazlon Ke Naam | Surabhi Dashputra" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/F_yvcXjf0RM?si=l8XSzG3Y5VEfARXi&enablejsapi=1" title="'Ghazalishक़ Showreel' | Love For Ghazals | Ek Shaam Ghazlon Ke Naam | Surabhi Dashputra" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="yt-video-info">
-                        <span class="yt-video-title">‘Ghazalishक़ Showreel’ | Love For Ghazals | Ek Shaam Ghazlon Ke Naam | Surabhi Dashputra</span>
+                        <span class="yt-video-title">'Ghazalishक़ Showreel' | Love For Ghazals | Ek Shaam Ghazlon Ke Naam | Surabhi Dashputra</span>
                     </div>
                 </div>
             </div>
-            <button class="yt-nav yt-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+            <button type="button" class="yt-nav yt-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
         </div>
 
         <!-- Channel CTA -->
@@ -229,37 +396,186 @@
     </div>
 </section>
 
-<!-- ─── ACADEMY ─── -->
-<section id="academy" class="section academy-sec">
+<!-- ─── 7. ADS & JINGLES ─── -->
+<section id="jingles" class="section jingles-sec">
+    <div class="jingles-bg-decor">
+        <span class="jingle-note j1">&#9835;</span>
+        <span class="jingle-note j2">&#9834;</span>
+        <span class="jingle-note j3">&#9833;</span>
+    </div>
+
     <div class="container">
         <div class="sec-head reveal">
-            <span class="sec-tag"><i class="fas fa-graduation-cap"></i> My Academy</span>
-            <h2>ASM <span class="highlight">Institute</span></h2>
+            <span class="sec-tag"><i class="fas fa-bullhorn"></i> Commercial Work</span>
+            <h2>Ad <span class="highlight">Jingles</span></h2>
+            <p class="sec-sub">Catchy tunes & vocal performances for leading brands</p>
             <div class="divider"></div>
         </div>
-        <div class="academy-card reveal">
-            <div class="academy-visual">
-                <i class="fas fa-music academy-bg-ico"></i>
-                <div class="academy-icon-wrap">
-                    <i class="fas fa-graduation-cap"></i>
+
+        <div class="jingles-carousel-wrap reveal" id="jinglesWrap">
+            <button class="jingles-scroll-btn jingles-scroll-prev" id="jinglesPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+            <button class="jingles-scroll-btn jingles-scroll-next" id="jinglesNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        <div class="jingles-grid" id="jinglesGrid">
+            <div class="jingle-card" data-yt="A27WX3WqRIY">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/A27WX3WqRIY/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-building"></i> Calapor</span>
+                    <h3>Tarana</h3>
+                    <p>Soulful vocal rendition for Calapor's brand campaign, blending melody and emotion.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-tag"></i> Brand Film</span>
+                        <span><i class="fas fa-music"></i> Vocals</span>
+                    </div>
                 </div>
             </div>
-            <div class="academy-info">
-                <h3>Aarambh School of Music</h3>
-                <p>Welcome to my music academy! ASM Institute is where passion meets profession. Join us to learn from industry experts, master your craft, and transform your musical dreams into reality through personalized training programs.</p>
-                <div class="academy-features">
-                    <span><i class="fas fa-microphone"></i> Vocal Training</span>
-                    <span><i class="fas fa-guitar"></i> Instruments</span>
-                    <span><i class="fas fa-sliders-h"></i> Music Production</span>
-                    <span><i class="fas fa-users"></i> Expert Faculty</span>
+
+            <div class="jingle-card" data-yt="JGMoTP38rio">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/JGMoTP38rio/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
                 </div>
-                <a href="https://www.asminstitute.com/" target="_blank" rel="noopener" class="btn btn-academy"><i class="fas fa-external-link-alt"></i> Explore Courses</a>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-film"></i> Judgementall Hai Kya</span>
+                    <h3>Kis Raste Hai Jana</h3>
+                    <p>Evocative vocals for this Bollywood thriller soundtrack featuring Kangana Ranaut & Rajkummar Rao.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-film"></i> Bollywood</span>
+                        <span><i class="fas fa-microphone"></i> Playback</span>
+                    </div>
+                </div>
             </div>
+
+            <div class="jingle-card" data-yt="JVe06h3ye9U">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/JVe06h3ye9U/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-compact-disc"></i> Saregama Carvaan</span>
+                    <h3>Sa Re Ga Ma Carvaan</h3>
+                    <p>Vocal performance for Saregama Carvaan's iconic ad campaign directed by Amit Sharma.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-tv"></i> TV Ad</span>
+                        <span><i class="fas fa-music"></i> Jingle</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jingle-card" data-yt="8y8vvSrIUqs">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/8y8vvSrIUqs/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-plane"></i> MakeMyTrip</span>
+                    <h3>MakeMyTrip Ad</h3>
+                    <p>Catchy jingle for MakeMyTrip's star-studded campaign featuring Ranveer Singh & Alia Bhatt.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-tv"></i> TV Ad</span>
+                        <span><i class="fas fa-star"></i> Celebrity</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jingle-card" data-yt="I-aKwqh3NHM">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/I-aKwqh3NHM/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-candy-cane"></i> Cadbury Dairy Milk</span>
+                    <h3>Wedding TVC</h3>
+                    <p>Heartwarming vocal track for Cadbury Dairy Milk's wedding-themed television commercial.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-tv"></i> TVC</span>
+                        <span><i class="fas fa-heart"></i> Emotional</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jingle-card" data-yt="CXjyevUcgMg">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/CXjyevUcgMg/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-seedling"></i> Ninjacart</span>
+                    <h3>#BetterLives For Every Agri Citizen</h3>
+                    <p>Inspirational vocals for Ninjacart's campaign celebrating India's agricultural community.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-bullhorn"></i> Campaign</span>
+                        <span><i class="fas fa-leaf"></i> Social</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jingle-card" data-yt="aH7YeoBJLNs">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/aH7YeoBJLNs/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-music"></i> Original</span>
+                    <h3>Maawan Ni Maawan</h3>
+                    <p>A soulful collaboration with Arjuna Harjai — an emotional track celebrating motherhood.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-microphone"></i> Feature</span>
+                        <span><i class="fas fa-heart"></i> Emotional</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jingle-card" data-yt="O4bEbpI5EqI">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/O4bEbpI5EqI/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-building"></i> Ambuja Cement</span>
+                    <h3>Ambuja Cement Ad</h3>
+                    <p>Vocal performance with lyrics by Gulzar for Ambuja Cement's inspiring brand campaign.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-tv"></i> TVC</span>
+                        <span><i class="fas fa-pen-fancy"></i> Gulzar</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jingle-card" data-yt="2L8T5YMc7t8">
+                <div class="jingle-thumb" style="background-image:url('https://img.youtube.com/vi/2L8T5YMc7t8/hqdefault.jpg')">
+                    <div class="jingle-play"><i class="fas fa-play"></i></div>
+                </div>
+                <div class="jingle-info">
+                    <span class="jingle-brand"><i class="fas fa-shield-alt"></i> Dettol</span>
+                    <h3>Dettol Dettol Ho</h3>
+                    <p>Catchy jingle for Dettol's ad film — an instantly memorable hook that stays with you.</p>
+                    <div class="jingle-tags">
+                        <span><i class="fas fa-tv"></i> Ad Film</span>
+                        <span><i class="fas fa-music"></i> Jingle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="jingles-cta reveal">
+            <div class="jingles-cta-card">
+                <div class="jingles-cta-text">
+                    <h3>Need a Jingle or Voice-Over?</h3>
+                    <p>Available for brand collaborations, ad jingles, and commercial voice-over projects.</p>
+                </div>
+                <a href="#contact" class="btn btn-jingle"><i class="fas fa-envelope"></i> Get in Touch</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- YouTube Video Popup -->
+    <div class="jingle-popup" id="jinglePopup">
+        <div class="jingle-popup-backdrop"></div>
+        <div class="jingle-popup-content">
+            <button class="jingle-popup-close" id="jinglePopupClose"><i class="fas fa-times"></i></button>
+            <div class="jingle-popup-player" id="jinglePopupPlayer"></div>
         </div>
     </div>
 </section>
 
-<!-- ─── INSTAGRAM REELS ─── -->
+<!-- ─── 8. INSTAGRAM REELS ─── -->
 <section id="reels" class="section reels-sec">
     <!-- Floating Music Notes Background -->
     <div class="reels-bg-decor">
@@ -301,50 +617,87 @@
     </div>
 </section>
 
-<!-- ─── FILMS ─── -->
-<section id="films" class="section films">
+<!-- ─── 9. PHOTOS (GALLERY) ─── -->
+<section id="gallery" class="section gallery-sec">
+    <div class="gallery-bg-decor">
+        <span class="gallery-float g1"><i class="fas fa-camera"></i></span>
+        <span class="gallery-float g2"><i class="fas fa-image"></i></span>
+        <span class="gallery-float g3"><i class="fas fa-camera-retro"></i></span>
+    </div>
+
     <div class="container">
         <div class="sec-head reveal">
-            <span class="sec-tag">Filmography</span>
-            <h2>Film <span class="highlight">Soundtracks</span></h2>
+            <span class="sec-tag"><i class="fas fa-images"></i> Visual Stories</span>
+            <h2>Photo <span class="highlight">Gallery</span></h2>
+            <p class="sec-sub">Moments captured on stage, in the studio & beyond</p>
             <div class="divider"></div>
         </div>
-        <div class="films-grid">
-            <div class="film-card reveal">
-                <div class="film-top" style="background:linear-gradient(135deg,#667eea,#764ba2)">
-                    <img src="images/image4.jpeg" alt="image4"><span class="film-yr">2019</span>
-                </div>
-                <div class="film-body">
-                    <h3>Judgementall Hai Kya</h3>
-                    <p>Surabhi's evocative vocals bring emotion to this psychological thriller's captivating soundtrack.</p>
-                    <span class="film-genre">Bollywood Thriller</span>
+
+        <!-- Filter Tabs -->
+        <div class="gallery-filters reveal">
+            <button class="gf-btn active" data-filter="all">All</button>
+            <button class="gf-btn" data-filter="stage">Live Performances</button>
+            <button class="gf-btn" data-filter="studio">Studio Sessions</button>
+            <button class="gf-btn" data-filter="bts">Behind the Scenes</button>
+        </div>
+
+        <!-- Dynamic Masonry Grid -->
+        <div class="gallery-grid reveal" id="galleryGrid">
+            <!-- Rendered dynamically by JS -->
+        </div>
+
+        <!-- Gallery Counter & Load More -->
+        <div class="gallery-footer reveal">
+            <span class="gallery-count" id="galleryCount"></span>
+            <button class="btn btn-gallery-more" id="galleryLoadMore">
+                <i class="fas fa-th"></i> Load More Photos
+            </button>
+        </div>
+    </div>
+
+    <!-- Gallery Lightbox -->
+    <div class="gallery-lightbox" id="galleryLightbox">
+        <button class="lb-close" aria-label="Close"><i class="fas fa-times"></i></button>
+        <button class="lb-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+        <button class="lb-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        <div class="lb-content">
+            <img id="lbImage" src="" alt="Gallery Image">
+        </div>
+        <div class="lb-counter" id="lbCounter"></div>
+    </div>
+</section>
+
+<!-- ─── 10. ASM INSTITUTE (ACADEMY) ─── -->
+<section id="academy" class="section academy-sec">
+    <div class="container">
+        <div class="sec-head reveal">
+            <span class="sec-tag"><i class="fas fa-graduation-cap"></i> My Academy</span>
+            <h2>ASM <span class="highlight">Institute</span></h2>
+            <div class="divider"></div>
+        </div>
+        <div class="academy-card reveal">
+            <div class="academy-visual">
+                <i class="fas fa-music academy-bg-ico"></i>
+                <div class="academy-icon-wrap">
+                    <i class="fas fa-graduation-cap"></i>
                 </div>
             </div>
-            <div class="film-card reveal">
-                <div class="film-top" style="background:linear-gradient(135deg,#f093fb,#f5576c)">
-                    <img src="images/image5.jpeg" alt="image5"><span class="film-yr">Hindi</span>
+            <div class="academy-info">
+                <h3>Aarambh School of Music</h3>
+                <p>Welcome to my music academy! ASM Institute is where passion meets profession. Join us to learn from industry experts, master your craft, and transform your musical dreams into reality through personalized training programs.</p>
+                <div class="academy-features">
+                    <span><i class="fas fa-microphone"></i> Vocal Training</span>
+                    <span><i class="fas fa-guitar"></i> Instruments</span>
+                    <span><i class="fas fa-sliders-h"></i> Music Production</span>
+                    <span><i class="fas fa-users"></i> Expert Faculty</span>
                 </div>
-                <div class="film-body">
-                    <h3>Titoo MBA</h3>
-                    <p>Her melodic rendition adds warmth and romance to this heartfelt cinematic story.</p>
-                    <span class="film-genre">Hindi Cinema</span>
-                </div>
-            </div>
-            <div class="film-card reveal">
-                <div class="film-top" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">
-                    <img src="images/image6.jpeg" alt="image6"><span class="film-yr">Classic</span>
-                </div>
-                <div class="film-body">
-                    <h3>DHAAGE</h3>
-                    <p>Contributing to the legacy soundtrack of this beloved film, showcasing her vocal versatility.</p>
-                    <span class="film-genre">Bollywood Classic</span>
-                </div>
+                <a href="https://www.asminstitute.com/" target="_blank" rel="noopener" class="btn btn-academy"><i class="fas fa-external-link-alt"></i> Explore Courses</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ─── CONTACT ─── -->
+<!-- ─── 11. CONTACT US ─── -->
 <section id="contact" class="section contact">
     <div class="container">
         <div class="sec-head reveal">
@@ -421,8 +774,13 @@
         <div class="footer-links">
             <a href="#home">Home</a>
             <a href="#about">About</a>
-            <a href="#music">Music</a>
-            <a href="#films">Films</a>
+            <a href="#music">Popular</a>
+            <a href="#films">Films & TV</a>
+            <a href="#news">News</a>
+            <a href="#youtube">YouTube</a>
+            <a href="#jingles">Ads & Jingles</a>
+            <a href="#reels">Reels</a>
+            <a href="#gallery">Photos</a>
             <a href="#academy">Academy</a>
             <a href="#contact">Connect</a>
         </div>

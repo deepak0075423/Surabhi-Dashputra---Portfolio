@@ -20,6 +20,328 @@
     const navOverlay  = document.getElementById('navOverlay');
     const backTop     = document.getElementById('backTop');
 
+    let userHasInteracted = false;
+    function markUserInteracted () { userHasInteracted = true; }
+    document.addEventListener('pointerdown', markUserInteracted, { capture: true, once: true });
+    document.addEventListener('keydown', markUserInteracted, { capture: true, once: true });
+
+    // ============================================================
+    // Media control (Spotify / Reels / YouTube): play one at a time
+    // ============================================================
+    let activeMediaType = null; // 'spotify' | 'reel' | 'youtube' | null
+    let activeReelVideo = null;
+    let activeYouTubePlayer = null;
+    let activeYouTubeIframe = null;
+
+    // Spotify embed (fallback iframe + optional Spotify Iframe API controller)
+    const spotifyWrap = document.querySelector('.spotify-wrap');
+    const spotifyFallbackIframe = spotifyWrap ? spotifyWrap.querySelector('iframe') : null;
+    const spotifyFallbackSrc = spotifyFallbackIframe ? spotifyFallbackIframe.getAttribute('src') : null;
+    const spotifyArtistUri = 'spotify:track:3TXjNRh2C9ybqG2ZYDrgh5';
+
+    let spotifyController = null;
+    let spotifyControllerReady = false;
+    let pendingSpotifyTrackId = null;
+    let spotifyPauseRequested = false;
+    let spotifyIsPlaying = false;
+
+    // Track current selected/playing Spotify track (used for fallback reload/pause)
+    let currentPlayingTrackId = null;
+
+    // YouTube Iframe API players (optional; fallback pause via postMessage)
+    const ytPlayers = [];
+    let youTubeApiInitRequested = false;
+
+    function pauseAllReels (exceptVideo) {
+        document.querySelectorAll('.reel-video').forEach(function (v) {
+            if (exceptVideo && v === exceptVideo) return;
+            try { v.pause(); } catch (_) {}
+        });
+    }
+
+    function pauseAllYouTube (opts) {
+        const exceptPlayer = opts && opts.player ? opts.player : null;
+        const exceptIframe = opts && opts.iframe ? opts.iframe : null;
+
+        if (ytPlayers.length && window.YT && typeof window.YT.PlayerState !== 'undefined') {
+            ytPlayers.forEach(function (p) {
+                if (exceptPlayer && p === exceptPlayer) return;
+                try {
+                    if (exceptIframe && typeof p.getIframe === 'function' && p.getIframe() === exceptIframe) return;
+                } catch (_) {}
+                try { p.pauseVideo(); } catch (_) {}
+            });
+            return;
+        }
+
+        // Fallback: requires enablejsapi=1 on the iframe URL
+        document.querySelectorAll('#youtube iframe').forEach(function (iframe) {
+            if (exceptIframe && iframe === exceptIframe) return;
+            try {
+                if (!iframe.contentWindow) return;
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: 'pauseVideo',
+                    args: ''
+                }), '*');
+            } catch (_) {}
+        });
+    }
+
+    function getSpotifyEmbedSrcForTrack (trackId, autoplay) {
+        const base = 'https://open.spotify.com/embed/track/' + trackId + '?utm_source=generator&theme=0';
+        return autoplay ? base + '&autoplay=1' : base;
+    }
+
+    function pauseSpotifyPlayback () {
+        if (spotifyController && spotifyControllerReady && typeof spotifyController.pause === 'function') {
+            try { spotifyController.pause(); } catch (_) {}
+            return;
+        }
+
+        // Fallback: force a reload to stop playback
+        if (!spotifyFallbackIframe) return;
+        if (currentPlayingTrackId) {
+            spotifyFallbackIframe.src = getSpotifyEmbedSrcForTrack(currentPlayingTrackId, false);
+        } else if (spotifyFallbackSrc) {
+            spotifyFallbackIframe.src = spotifyFallbackSrc;
+        }
+    }
+
+    function setActiveMedia (type, opts) {
+        if (type === 'spotify') {
+            activeMediaType = 'spotify';
+            activeReelVideo = null;
+            activeYouTubePlayer = null;
+            activeYouTubeIframe = null;
+            spotifyPauseRequested = false;
+            pauseAllReels();
+            pauseAllYouTube();
+            return;
+        }
+
+        if (type === 'youtube') {
+            activeMediaType = 'youtube';
+            activeYouTubePlayer = opts && opts.player ? opts.player : null;
+            activeReelVideo = null;
+            activeYouTubeIframe = opts && opts.iframe ? opts.iframe : null;
+            if (!activeYouTubeIframe && activeYouTubePlayer && typeof activeYouTubePlayer.getIframe === 'function') {
+                try { activeYouTubeIframe = activeYouTubePlayer.getIframe(); } catch (_) {}
+            }
+            spotifyPauseRequested = spotifyIsPlaying;
+            pauseSpotifyPlayback();
+            pauseAllReels();
+            pauseAllYouTube({ player: activeYouTubePlayer, iframe: activeYouTubeIframe });
+            return;
+        }
+
+        if (type === 'reel') {
+            activeMediaType = 'reel';
+            activeReelVideo = opts && opts.video ? opts.video : null;
+            activeYouTubePlayer = null;
+            activeYouTubeIframe = null;
+            spotifyPauseRequested = spotifyIsPlaying;
+            pauseSpotifyPlayback();
+            pauseAllYouTube();
+            pauseAllReels(activeReelVideo);
+            return;
+        }
+
+        activeMediaType = null;
+        activeReelVideo = null;
+        activeYouTubePlayer = null;
+        activeYouTubeIframe = null;
+    }
+
+    function playSpotifyTrack (trackId) {
+        currentPlayingTrackId = trackId;
+        setActiveMedia('spotify');
+
+        // Prefer Spotify Iframe API when available (can autoplay reliably)
+        if (spotifyController && spotifyControllerReady) {
+            try {
+                if (typeof spotifyController.loadUri === 'function') {
+                    spotifyController.loadUri('spotify:track:' + trackId);
+                }
+                if (typeof spotifyController.play === 'function') {
+                    spotifyController.play();
+                }
+                return;
+            } catch (_) {
+                // fall through to iframe fallback
+            }
+        }
+
+        if (spotifyFallbackIframe) {
+            spotifyFallbackIframe.src = getSpotifyEmbedSrcForTrack(trackId, true);
+        }
+    }
+
+    function initSpotifyIframeApi () {
+        if (!spotifyWrap) return;
+        if (spotifyWrap.dataset.spotifyApiInit === 'true') return;
+        spotifyWrap.dataset.spotifyApiInit = 'true';
+
+        const mount = document.createElement('div');
+        mount.id = 'spotifyEmbedMount';
+        spotifyWrap.appendChild(mount);
+
+        const prevReady = window.onSpotifyIframeApiReady;
+        window.onSpotifyIframeApiReady = function (IFrameAPI) {
+            try {
+                const options = { uri: spotifyArtistUri, width: '100%', height: 420 };
+                IFrameAPI.createController(mount, options, function (controller) {
+                    spotifyController = controller;
+                    spotifyControllerReady = true;
+                    if (spotifyFallbackIframe) spotifyFallbackIframe.style.display = 'none';
+
+                    // Ensure autoplay permission on the API-generated iframe
+                    const apiIframe = mount.querySelector('iframe');
+                    if (apiIframe) {
+                        apiIframe.setAttribute('allow', 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture');
+                        apiIframe.setAttribute('loading', 'lazy');
+                    }
+
+                    // When Spotify starts playing, pause reels + YouTube
+                    if (controller && typeof controller.addListener === 'function') {
+                        controller.addListener('playback_update', function (e) {
+                            const isPaused = e && e.data && typeof e.data.isPaused === 'boolean'
+                                ? e.data.isPaused
+                                : null;
+                            if (isPaused === true) spotifyIsPlaying = false;
+                            if (isPaused === false) spotifyIsPlaying = true;
+
+                            if (isPaused === false) {
+                                if (!activeMediaType || activeMediaType === 'spotify') {
+                                    setActiveMedia('spotify');
+                                } else if (spotifyPauseRequested) {
+                                    pauseSpotifyPlayback();
+                                } else {
+                                    // Spotify started while something else was active: treat Spotify as the new active media.
+                                    setActiveMedia('spotify');
+                                }
+                            }
+                            if (isPaused === true) {
+                                if (spotifyPauseRequested) spotifyPauseRequested = false;
+                                if (activeMediaType === 'spotify') setActiveMedia(null);
+                            }
+                        });
+                    }
+
+                    if (pendingSpotifyTrackId) {
+                        const trackId = pendingSpotifyTrackId;
+                        pendingSpotifyTrackId = null;
+                        playSpotifyTrack(trackId);
+                    }
+                });
+            } catch (_) {
+                // Keep fallback iframe if API init fails
+            }
+
+            if (typeof prevReady === 'function') {
+                try { prevReady(IFrameAPI); } catch (_) {}
+            }
+        };
+
+        if (!document.querySelector('script[data-spotify-iframe-api]')) {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = 'https://open.spotify.com/embed/iframe-api/v1';
+            s.dataset.spotifyIframeApi = 'true';
+            document.body.appendChild(s);
+        }
+    }
+
+    // Treat focusing/clicking the Spotify embed area as "intent to play Spotify".
+    // Helps ensure Spotify can take over from YouTube/Reels when the user clicks play inside the embed UI.
+    function initSpotifyIntentListeners () {
+        if (!spotifyWrap) return;
+        if (spotifyWrap.dataset.mediaIntentInit === 'true') return;
+        spotifyWrap.dataset.mediaIntentInit = 'true';
+
+        function activate () { setActiveMedia('spotify'); }
+        spotifyWrap.addEventListener('focusin', activate, true);
+        spotifyWrap.addEventListener('pointerdown', activate, true);
+    }
+
+    function initYouTubeIframeApi () {
+        const iframes = document.querySelectorAll('#youtube iframe');
+        if (!iframes.length) return;
+        if (youTubeApiInitRequested) return;
+        youTubeApiInitRequested = true;
+
+        function onStateChange (event) {
+            if (!event || !event.target || !window.YT) return;
+            const state = event.data;
+
+            if (state === window.YT.PlayerState.PLAYING) {
+                setActiveMedia('youtube', { player: event.target });
+            }
+
+            if (
+                (state === window.YT.PlayerState.PAUSED || state === window.YT.PlayerState.ENDED) &&
+                activeMediaType === 'youtube' &&
+                activeYouTubePlayer === event.target
+            ) {
+                setActiveMedia(null);
+            }
+        }
+
+        function createPlayers () {
+            if (!window.YT || !window.YT.Player) return;
+            iframes.forEach(function (iframe) {
+                try {
+                    const player = new window.YT.Player(iframe, { events: { onStateChange: onStateChange } });
+                    ytPlayers.push(player);
+                } catch (_) {}
+            });
+        }
+
+        if (window.YT && window.YT.Player) {
+            createPlayers();
+            return;
+        }
+
+        const prev = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () {
+            try { createPlayers(); } catch (_) {}
+            if (typeof prev === 'function') {
+                try { prev(); } catch (_) {}
+            }
+        };
+
+        if (!document.querySelector('script[data-youtube-iframe-api]')) {
+            const tag = document.createElement('script');
+            tag.async = true;
+            tag.src = 'https://www.youtube.com/iframe_api';
+            tag.dataset.youtubeIframeApi = 'true';
+            document.head.appendChild(tag);
+        }
+    }
+
+    // If the YouTube API is blocked or slow, Spotify can still keep pausing YouTube.
+    // Treat focusing/clicking a YouTube iframe as "intent to play" and pause other media immediately.
+    function initYouTubeIntentListeners () {
+        const youtubeSection = document.getElementById('youtube');
+        if (!youtubeSection) return;
+        if (youtubeSection.dataset.mediaIntentInit === 'true') return;
+        youtubeSection.dataset.mediaIntentInit = 'true';
+
+        function maybeActivate (e) {
+            const target = e && e.target ? e.target : null;
+            if (!target || target.tagName !== 'IFRAME') return;
+            setActiveMedia('youtube', { iframe: target });
+        }
+
+        youtubeSection.addEventListener('focusin', maybeActivate, true);
+        youtubeSection.addEventListener('pointerdown', maybeActivate, true);
+    }
+
+    initSpotifyIframeApi();
+    initYouTubeIframeApi();
+    initYouTubeIntentListeners();
+    initSpotifyIntentListeners();
+
     // ================================================
     // 1.  NAVBAR — add .scrolled when page scrolls
     // ================================================
@@ -146,105 +468,131 @@
         trackObs.observe(tracksSec);
     }
 
-    function animateBars () {
-        document.querySelectorAll('.tfill').forEach(function (bar, i) {
-            setTimeout(function () {
-                bar.style.width = (bar.dataset.w || '0') + '%';
-            }, i * 220);
-        });
-    }
-
     // ================================================
-    // 6b. DYNAMIC TRACK LIST & CLICK TO PLAY
+    // 6b. PLAYLIST (Independent vs Films & Series)
     // ================================================
+    const playlistData = [
+        // Independent songs (IDs pending where blank)
+        { id: '', name: 'Manzoor Nahi', category: 'independent' },
+        { id: '', name: 'Laage Naahi Man', category: 'independent' },
+        { id: '', name: 'Mai Jaanu Na', category: 'independent' },
+        { id: '7EWlAp5v5iI1wrHJyXIs87', name: 'Naa Jao', category: 'independent' },
+        { id: '', name: 'Tum Yun Roothe', category: 'independent' },
+        { id: '', name: 'Balma', category: 'independent' },
+        { id: '4Mpj5odhILzZEMylxorNOs', name: 'Maanoge Na?', category: 'independent' },
+        { id: '', name: 'Dil Vich Rab', category: 'independent' },
+        { id: '', name: 'Na Maanungi', category: 'independent' },
+        { id: '4tefrWaeysumoEvGz23J56', name: 'Rehn De', category: 'independent' },
+        { id: '0DE5XwVjRp2MT2zQI8brRF', name: 'Qadar Na Jaane', category: 'independent' },
+        { id: '3uGOEFiAtF4e6caYf8JFo6', name: 'Gumsum', category: 'independent' },
+        { id: '', name: 'Teri Nazar Ka Jaadu', category: 'independent' },
+        { id: '4ebzARJSxxzlvR7O5vtJ3S', name: 'More Sajan', category: 'independent' },
+        { id: '3TXjNRh2C9ybqG2ZYDrgh5', name: 'Dhul Gaye', category: 'independent' },
+        { id: '5BG231YR8VjjLf37AKpZre', name: 'Jism Ya Rooh', category: 'independent' },
+        { id: '', name: 'Sukh Karta', category: 'independent' },
+        { id: '', name: 'Aai Mehendi Wali Raat', category: 'independent' },
+        { id: '', name: 'Neele Neele Ole Ole', category: 'independent' },
+        { id: '', name: 'Ram Kahun', category: 'independent' },
+        { id: '5AUYlghrRZHKxJ9ni5VIUx', name: 'Kaarigar', category: 'independent' },
+        { id: '3U51GW2kvwnOsiHztxk1Zr', name: 'Tu Hi Hai Channa', category: 'independent' },
+        { id: '', name: 'Ludhiyane Waleya', category: 'independent' },
 
-    // Track data - all songs from Surabhi Dashputra's Spotify
-    const trackData = [
-        { id: '3TXjNRh2C9ybqG2ZYDrgh5', name: 'Dhul Gaye', plays: '1,388,846', year: '2025' },
-        { id: '4Mpj5odhILzZEMylxorNOs', name: 'Mangoge Na?', plays: '1,267,587', year: '2024' },
-        { id: '4tefrWaeysumoEvGz23J56', name: 'Rehn De', plays: '397,508', year: '2023' },
-        { id: '0DE5XwVjRp2MT2zQI8brRF', name: 'Kadar Na Jaane', plays: '257,833', year: '2022' },
-        { id: '2dt3ufaUo17rMaf8bt9ZmD', name: 'Kis Raste Hai Jana', plays: '228,198', year: '2019' },
-        { id: '5GevKyan5AcdTHuT9ukyNc', name: 'Raahiya Ve', plays: '147,344', year: '2019' },
-        { id: '4ebzARJSxxzlvR7O5vtJ3S', name: 'More Sajan', plays: '139,408', year: '2022' },
-        { id: '4kPHxTSLwAtW0jGFfmyi8E', name: 'O Ranjhna', plays: '124,027', year: '2018' },
-        { id: '7EWlAp5v5iI1wrHJyXIs87', name: 'Naa Jao', plays: '71,069', year: '2022' },
-        { id: '5AUYlghrRZHKxJ9ni5VIUx', name: 'Karigar', plays: '68,622', year: '2025' },
-        { id: '3uGOEFiAtF4e6caYf8JFo6', name: 'Gumsum', plays: '45,000', year: '2019' },
-        { id: '7rzNbxtI5OIavvltjLiNXC', name: 'Rab Ki Baatein', plays: '38,000', year: '2016' },
-        { id: '5KmIKqXj2ZMK31ybmmLCmB', name: 'Tarana', plays: '25,000', year: '2013' },
-        { id: '5m48aRV6nH5MeKmycAeZHK', name: 'I Love U Maa', plays: '20,000', year: '2013' },
-        { id: '3U51GW2kvwnOsiHztxk1Zr', name: 'Tu Hi Hai Channa', plays: '3,699', year: '2026' },
-        { id: '5BG231YR8VjjLf37AKpZre', name: 'Jism Ya Rooh', plays: '1,800', year: '2025' },
-        { id: '3HB6DGSmxzzWBBWXkQUW21', name: 'Bheja No Dahi', plays: '1,500', year: '2025' }
+        // Films & series
+        { id: '', name: 'Bandi Yudh Ke (POW)', category: 'films' },
+        { id: '', name: 'Ik Omkar (POW)', category: 'films' },
+        { id: '5GevKyan5AcdTHuT9ukyNc', name: 'Raahiya Ve (POW)', category: 'films' },
+        { id: '7rzNbxtI5OIavvltjLiNXC', name: 'Rab Ki Baatein (POW)', category: 'films' },
+        { id: '', name: 'Aa Chal Ke Tujhe (POW)', category: 'films' },
+        { id: '', name: 'Kya Kasoor Tha Amla Ka (Title Track)', category: 'films' }
     ];
 
     const trackListContainer = document.getElementById('trackList');
-    const spotifyIframe = document.querySelector('.spotify-wrap iframe');
+    const playlistTabs = document.querySelectorAll('.pl-tab[data-filter]');
+    let activePlaylistFilter = 'all';
 
-    // Track current playing song for pause/resume on reel hover
-    let currentPlayingTrackId = null;
+    const categoryLabel = {
+        independent: 'Independent',
+        films: 'Films & Series'
+    };
 
-    // Calculate max plays for progress bar
-    const maxPlays = Math.max(...trackData.map(t => parseInt(t.plays.replace(/,/g, ''))));
-
-    // Generate track list dynamically
-    function renderTracks() {
-        if (!trackListContainer) return;
-
-        trackListContainer.innerHTML = trackData.map(function(track, index) {
-            const playsNum = parseInt(track.plays.replace(/,/g, ''));
-            const barWidth = Math.round((playsNum / maxPlays) * 100);
-            const num = String(index + 1).padStart(2, '0');
-
-            return '<div class="track" data-track="' + track.id + '" tabindex="0" role="button" aria-label="Play ' + track.name + '">' +
-                '<span class="tnum">' + num + '</span>' +
-                '<div class="tinfo">' +
-                    '<span class="tname">' + track.name + '</span>' +
-                    '<span class="tplays"><i class="fas fa-play"></i> ' + track.plays + ' plays</span>' +
-                '</div>' +
-                '<div class="tbar"><div class="tfill" data-w="' + barWidth + '"></div></div>' +
-            '</div>';
-        }).join('');
-
-        // Attach click handlers after rendering
-        attachTrackHandlers();
-
-        // Animate bars after a short delay
-        setTimeout(animateBars, 300);
+    function sanitizeHtmlText (text) {
+        return String(text || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
-    function attachTrackHandlers() {
-        const tracks = document.querySelectorAll('.track[data-track]');
+    function getFilteredPlaylist () {
+        if (activePlaylistFilter === 'all') return playlistData.slice();
+        return playlistData.filter(function (t) { return t.category === activePlaylistFilter; });
+    }
 
-        tracks.forEach(function (track) {
-            track.addEventListener('click', function () {
+    function renderPlaylist () {
+        if (!trackListContainer) return;
+
+        const items = getFilteredPlaylist();
+        trackListContainer.innerHTML = items.map(function (track, index) {
+            const num = String(index + 1).padStart(2, '0');
+            const hasId = Boolean(track.id);
+            const cat = track.category === 'films' ? 'films' : 'independent';
+            const title = sanitizeHtmlText(track.name);
+            const badge = sanitizeHtmlText(categoryLabel[cat] || 'Independent');
+
+            return '' +
+                '<div class="pl-item' + (hasId ? '' : ' is-missing') + '" ' +
+                    (hasId ? ('data-track="' + track.id + '"') : '') +
+                    ' data-category="' + cat + '" tabindex="' + (hasId ? '0' : '-1') + '" role="button" ' +
+                    'aria-label="' + (hasId ? ('Play ' + title) : (title + ' (Spotify link pending)')) + '">' +
+                    '<span class="pl-num">' + num + '</span>' +
+                    '<div class="pl-main">' +
+                        '<span class="pl-title">' + title + '</span>' +
+                        '<span class="pl-sub">' + badge + '</span>' +
+                    '</div>' +
+                    '<span class="pl-badge ' + cat + '">' + badge + '</span>' +
+                '</div>';
+        }).join('');
+
+        attachPlaylistHandlers();
+        syncActiveTrackHighlight();
+    }
+
+    function syncActiveTrackHighlight () {
+        if (!currentPlayingTrackId) return;
+        const items = trackListContainer ? trackListContainer.querySelectorAll('.pl-item[data-track]') : [];
+        items.forEach(function (el) {
+            if (el.dataset.track === currentPlayingTrackId) el.classList.add('pl-active');
+            else el.classList.remove('pl-active');
+        });
+    }
+
+    function attachPlaylistHandlers () {
+        if (!trackListContainer) return;
+        const items = trackListContainer.querySelectorAll('.pl-item[data-track]');
+
+        items.forEach(function (item) {
+            item.addEventListener('click', function () {
                 const trackId = this.dataset.track;
-                if (!trackId || !spotifyIframe) return;
+                if (!trackId) return;
 
-                // Track the current playing song
-                currentPlayingTrackId = trackId;
+                if (!spotifyControllerReady) pendingSpotifyTrackId = trackId;
+                playSpotifyTrack(trackId);
 
-                // Update iframe to play selected track with autoplay
-                spotifyIframe.src = 'https://open.spotify.com/embed/track/' + trackId + '?utm_source=generator&theme=0&autoplay=1';
+                items.forEach(function (t) { t.classList.remove('pl-active'); });
+                this.classList.add('pl-active');
 
-                // Add active state to clicked track
-                tracks.forEach(function (t) { t.classList.remove('track-active'); });
-                this.classList.add('track-active');
-
-                // Scroll to player on mobile
                 if (window.innerWidth < 900) {
                     const playerWrap = document.querySelector('.spotify-wrap');
                     if (playerWrap) {
-                        const offset = navbar.offsetHeight + 16;
+                        const offset = navbar ? navbar.offsetHeight + 16 : 16;
                         const top = playerWrap.getBoundingClientRect().top + window.scrollY - offset;
                         window.scrollTo({ top: top, behavior: 'smooth' });
                     }
                 }
             });
 
-            // Keyboard accessibility
-            track.addEventListener('keydown', function (e) {
+            item.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     this.click();
@@ -253,8 +601,25 @@
         });
     }
 
-    // Initialize track list
-    renderTracks();
+    function setActivePlaylistFilter (filter) {
+        activePlaylistFilter = filter;
+        playlistTabs.forEach(function (btn) {
+            const isActive = btn.dataset.filter === filter;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        renderPlaylist();
+    }
+
+    playlistTabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const filter = this.dataset.filter || 'all';
+            setActivePlaylistFilter(filter);
+        });
+    });
+
+    // Initialize playlist UI
+    renderPlaylist();
 
     // ================================================
     // 6c. INSTAGRAM REELS
@@ -395,12 +760,9 @@
         }
     ];
 
-    // Track if Spotify was playing before reel hover
-    let spotifyWasPlaying = false;
-
-    const reelsGrid = document.getElementById('reelsGrid');
-    const reelsPrev = document.querySelector('.reels-prev');
-    const reelsNext = document.querySelector('.reels-next');
+	    const reelsGrid = document.getElementById('reelsGrid');
+	    const reelsPrev = document.querySelector('.reels-prev');
+	    const reelsNext = document.querySelector('.reels-next');
 
     function renderReels() {
         if (!reelsGrid) return;
@@ -453,50 +815,52 @@
                 if (loader) loader.innerHTML = '<i class="fab fa-instagram"></i><span>Video not found</span>';
             });
 
-            // Autoplay when visible
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        video.play().catch(function(){});
-                    } else {
-                        video.pause();
-                    }
-                });
-            }, { threshold: 0.5 });
-            observer.observe(card);
-
-            // Sound on hover + Spotify pause/resume
-            card.addEventListener('mouseenter', function() {
-                video.muted = false;
-                if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-
-                // Pause Spotify if a song is playing
-                if (currentPlayingTrackId && spotifyIframe) {
-                    spotifyWasPlaying = true;
-                    // Remove autoplay to pause the music
-                    spotifyIframe.src = 'https://open.spotify.com/embed/track/' + currentPlayingTrackId + '?utm_source=generator&theme=0';
-                }
-            });
-
-            card.addEventListener('mouseleave', function() {
-                video.muted = true;
-                if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-
-                // Resume Spotify if it was playing before
-                if (spotifyWasPlaying && currentPlayingTrackId && spotifyIframe) {
-                    spotifyIframe.src = 'https://open.spotify.com/embed/track/' + currentPlayingTrackId + '?utm_source=generator&theme=0&autoplay=1';
-                    spotifyWasPlaying = false;
-                }
-            });
+	            // Autoplay when visible
+	            const observer = new IntersectionObserver(function(entries) {
+	                entries.forEach(function(entry) {
+	                    if (entry.isIntersecting) {
+	                        if (activeMediaType && activeMediaType !== 'reel') {
+	                            video.pause();
+	                            return;
+	                        }
+	                        setActiveMedia('reel', { video: video });
+	                        video.play().catch(function(){});
+	                    } else {
+	                        video.pause();
+	                    }
+	                });
+	            }, { threshold: 0.5 });
+	            observer.observe(card);
+	
+	            // Sound on hover
+	            card.addEventListener('mouseenter', function() {
+	                setActiveMedia('reel', { video: video });
+	                video.play().catch(function(){});
+	                if (userHasInteracted) {
+	                    video.muted = false;
+	                    if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+	                } else {
+	                    video.muted = true;
+	                    if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+	                }
+	            });
+	
+	            card.addEventListener('mouseleave', function() {
+	                video.muted = true;
+	                if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+	            });
 
             // Sound button click
-            if (soundBtn) {
-                soundBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    video.muted = !video.muted;
-                    this.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
-                });
-            }
+	            if (soundBtn) {
+	                soundBtn.addEventListener('click', function(e) {
+	                    e.stopPropagation();
+	                    setActiveMedia('reel', { video: video });
+	                    userHasInteracted = true;
+	                    video.muted = !video.muted;
+	                    this.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+	                    video.play().catch(function(){});
+	                });
+	            }
 
             // Click to open specific reel on Instagram
             card.addEventListener('click', function() {
@@ -533,6 +897,568 @@
 
     // Initialize reels
     renderReels();
+
+    // ================================================
+    // 6e. GALLERY — Premium Masonry with Auto-Settle
+    // ================================================
+    //
+    // HOW TO ADD IMAGES:
+    // Just add entries to galleryData below. No sizes needed —
+    // images automatically settle into a beautiful masonry layout.
+    // Each entry: { src, alt, category ('stage'|'studio'|'bts'), tag, icon }
+    //
+    var galleryData = [
+        { src: 'images/image1.jpeg',     alt: 'Live Performance',    category: 'stage',  tag: 'Live Performance',  icon: 'fa-microphone'     },
+        { src: 'images/image2.jpeg',     alt: 'Studio Session',      category: 'studio', tag: 'Studio Session',    icon: 'fa-headphones'     },
+        { src: 'images/image3.png',      alt: 'Behind the Scenes',   category: 'bts',    tag: 'Behind the Scenes', icon: 'fa-film'           },
+        { src: 'images/image3 1.jpeg',   alt: 'Concert',             category: 'stage',  tag: 'Concert',           icon: 'fa-music'          },
+        { src: 'images/image3 2.jpeg',   alt: 'Recording Session',   category: 'studio', tag: 'Recording',         icon: 'fa-record-vinyl'   },
+        { src: 'images/image4.jpeg',     alt: 'Candid Moment',       category: 'bts',    tag: 'Candid Moments',    icon: 'fa-star'           },
+        { src: 'images/image5.jpeg',     alt: 'On Stage',            category: 'stage',  tag: 'On Stage',          icon: 'fa-microphone-alt' },
+        { src: 'images/image6.jpeg',     alt: 'Music Production',    category: 'studio', tag: 'Music Production',  icon: 'fa-sliders-h'      }
+        // ADD MORE IMAGES — just follow the format above. No sizing needed!
+        // Example:
+        // { src: 'images/newphoto.jpeg', alt: 'Description', category: 'stage', tag: 'Live Show', icon: 'fa-music' },
+    ];
+
+    var GALLERY_PER_PAGE = 12;
+    var galleryShown = 0;
+    var galleryFilter = 'all';
+    var galleryGridEl = document.getElementById('galleryGrid');
+    var galleryCountEl = document.getElementById('galleryCount');
+    var galleryLoadMoreBtn = document.getElementById('galleryLoadMore');
+    var lightbox = document.getElementById('galleryLightbox');
+    var lbImage = document.getElementById('lbImage');
+    var lbCounter = document.getElementById('lbCounter');
+    var lbClose = lightbox ? lightbox.querySelector('.lb-close') : null;
+    var lbPrev = lightbox ? lightbox.querySelector('.lb-prev') : null;
+    var lbNext = lightbox ? lightbox.querySelector('.lb-next') : null;
+    var currentLbIndex = 0;
+
+    function getFilteredGallery() {
+        if (galleryFilter === 'all') return galleryData;
+        return galleryData.filter(function(item) { return item.category === galleryFilter; });
+    }
+
+    // Staggered reveal animation
+    function staggerReveal(container) {
+        var items = container.querySelectorAll('.gallery-item:not(.gi-visible)');
+        items.forEach(function(el, i) {
+            setTimeout(function() {
+                el.classList.add('gi-visible');
+            }, i * 80);
+        });
+    }
+
+    function renderGallery(reset) {
+        if (!galleryGridEl) return;
+        if (reset) {
+            galleryGridEl.innerHTML = '';
+            galleryShown = 0;
+        }
+
+        var filtered = getFilteredGallery();
+        var end = Math.min(galleryShown + GALLERY_PER_PAGE, filtered.length);
+        var fragment = document.createDocumentFragment();
+
+        for (var i = galleryShown; i < end; i++) {
+            var item = filtered[i];
+            var div = document.createElement('div');
+            div.className = 'gallery-item';
+            div.dataset.category = item.category;
+            div.dataset.index = String(i);
+            div.innerHTML =
+                '<img src="' + item.src + '" alt="Surabhi Dashputra - ' + item.alt + '" loading="lazy">' +
+                '<span class="gi-num">' + (i + 1) + '</span>' +
+                '<span class="gi-accent"></span>' +
+                '<div class="gi-overlay">' +
+                    '<span class="gi-tag"><i class="fas ' + item.icon + '"></i> ' + item.tag + '</span>' +
+                    '<span class="gi-expand"><i class="fas fa-expand"></i></span>' +
+                '</div>';
+            div.addEventListener('click', (function(idx) {
+                return function() { openLightbox(idx); };
+            })(i));
+
+            // 3D tilt effect on mouse move
+            div.addEventListener('mousemove', function(e) {
+                var rect = this.getBoundingClientRect();
+                var x = (e.clientX - rect.left) / rect.width - 0.5;
+                var y = (e.clientY - rect.top) / rect.height - 0.5;
+                this.style.transform = 'perspective(800px) rotateY(' + (x * 6) + 'deg) rotateX(' + (-y * 6) + 'deg) scale(1.02)';
+            });
+            div.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+
+            fragment.appendChild(div);
+        }
+
+        galleryGridEl.appendChild(fragment);
+        galleryShown = end;
+
+        // Staggered reveal
+        staggerReveal(galleryGridEl);
+
+        // Update counter
+        if (galleryCountEl) {
+            galleryCountEl.textContent = 'Showing ' + galleryShown + ' of ' + filtered.length + ' photos';
+        }
+
+        // Toggle load more button
+        if (galleryLoadMoreBtn) {
+            if (galleryShown >= filtered.length) {
+                galleryLoadMoreBtn.classList.add('hidden');
+            } else {
+                galleryLoadMoreBtn.classList.remove('hidden');
+            }
+        }
+    }
+
+    function openLightbox(index) {
+        if (!lightbox || !lbImage) return;
+        var filtered = getFilteredGallery();
+        currentLbIndex = index;
+        if (!filtered[currentLbIndex]) return;
+        lbImage.src = filtered[currentLbIndex].src;
+        lbCounter.textContent = (currentLbIndex + 1) + ' / ' + filtered.length;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        if (!lightbox) return;
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function navigateLb(dir) {
+        var filtered = getFilteredGallery();
+        currentLbIndex = (currentLbIndex + dir + filtered.length) % filtered.length;
+        if (!filtered[currentLbIndex]) return;
+        lbImage.src = filtered[currentLbIndex].src;
+        lbCounter.textContent = (currentLbIndex + 1) + ' / ' + filtered.length;
+    }
+
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbPrev) lbPrev.addEventListener('click', function() { navigateLb(-1); });
+    if (lbNext) lbNext.addEventListener('click', function() { navigateLb(1); });
+
+    if (lightbox) {
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) closeLightbox();
+        });
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (!lightbox || !lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navigateLb(-1);
+        if (e.key === 'ArrowRight') navigateLb(1);
+    });
+
+    // Load More button
+    if (galleryLoadMoreBtn) {
+        galleryLoadMoreBtn.addEventListener('click', function() {
+            renderGallery(false);
+        });
+    }
+
+    // Gallery Filters
+    var filterBtns = document.querySelectorAll('.gf-btn');
+    filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            galleryFilter = this.dataset.filter;
+            filterBtns.forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            renderGallery(true);
+        });
+    });
+
+    // Initialize gallery
+    renderGallery(true);
+
+    // ================================================
+    // 6f. FILMS TABS — Films / TV Toggle + Scroll
+    // ================================================
+    var filmTabBtns = document.querySelectorAll('.ft-btn');
+    var filmCards = document.querySelectorAll('.film-card[data-type]');
+    var filmsGrid = document.getElementById('filmsGrid');
+    var filmsGridWrap = document.getElementById('filmsGridWrap');
+    var filmsPrev = document.getElementById('filmsPrev');
+    var filmsNext = document.getElementById('filmsNext');
+
+    // Update scroll arrows visibility
+    function updateFilmsScroll() {
+        if (!filmsGrid || !filmsGridWrap) return;
+        var scrollLeft = filmsGrid.scrollLeft;
+        var maxScroll = filmsGrid.scrollWidth - filmsGrid.clientWidth;
+        var canScrollLeft = scrollLeft > 5;
+        var canScrollRight = maxScroll > 5 && scrollLeft < maxScroll - 5;
+
+        if (filmsPrev) filmsPrev.classList.toggle('visible', canScrollLeft);
+        if (filmsNext) filmsNext.classList.toggle('visible', canScrollRight);
+        filmsGridWrap.classList.toggle('can-scroll-left', canScrollLeft);
+        filmsGridWrap.classList.toggle('can-scroll-right', canScrollRight);
+    }
+
+    function scrollFilms(direction) {
+        if (!filmsGrid) return;
+        var card = filmsGrid.querySelector('.film-card:not([style*="display: none"])');
+        var cardWidth = card ? card.offsetWidth + 24 : 350;
+        filmsGrid.scrollBy({
+            left: direction === 'next' ? cardWidth : -cardWidth,
+            behavior: 'smooth'
+        });
+    }
+
+    if (filmsGrid) {
+        filmsGrid.addEventListener('scroll', updateFilmsScroll);
+        window.addEventListener('resize', updateFilmsScroll);
+    }
+    if (filmsPrev) {
+        filmsPrev.addEventListener('click', function(e) {
+            e.preventDefault();
+            scrollFilms('prev');
+        });
+    }
+    if (filmsNext) {
+        filmsNext.addEventListener('click', function(e) {
+            e.preventDefault();
+            scrollFilms('next');
+        });
+    }
+
+    filmTabBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var tab = this.dataset.tab;
+            filmTabBtns.forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+
+            filmCards.forEach(function(card) {
+                if (card.dataset.type === tab) {
+                    card.style.display = '';
+                    card.classList.add('visible');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Reset scroll and update arrows after tab switch
+            if (filmsGrid) filmsGrid.scrollLeft = 0;
+            setTimeout(updateFilmsScroll, 100);
+        });
+    });
+
+    // Initial scroll check
+    setTimeout(updateFilmsScroll, 300);
+
+    // ================================================
+    // 6h. JINGLES — YouTube Video Popup
+    // ================================================
+    var jinglePopup = document.getElementById('jinglePopup');
+    var jinglePopupPlayer = document.getElementById('jinglePopupPlayer');
+    var jinglePopupClose = document.getElementById('jinglePopupClose');
+    var jinglePopupBackdrop = jinglePopup ? jinglePopup.querySelector('.jingle-popup-backdrop') : null;
+
+    function openJinglePopup(videoId) {
+        if (!jinglePopup || !jinglePopupPlayer) return;
+        jinglePopupPlayer.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+        jinglePopup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeJinglePopup() {
+        if (!jinglePopup || !jinglePopupPlayer) return;
+        jinglePopup.classList.remove('active');
+        jinglePopupPlayer.innerHTML = '';
+        document.body.style.overflow = '';
+    }
+
+    // Jingles Carousel Scroll
+    var jinglesGrid = document.getElementById('jinglesGrid');
+    var jinglesWrap = document.getElementById('jinglesWrap');
+    var jinglesPrev = document.getElementById('jinglesPrev');
+    var jinglesNext = document.getElementById('jinglesNext');
+
+    function updateJinglesScroll() {
+        if (!jinglesGrid || !jinglesWrap) return;
+        var scrollLeft = jinglesGrid.scrollLeft;
+        var maxScroll = jinglesGrid.scrollWidth - jinglesGrid.clientWidth;
+        var canScrollLeft = scrollLeft > 5;
+        var canScrollRight = maxScroll > 5 && scrollLeft < maxScroll - 5;
+
+        if (jinglesPrev) jinglesPrev.classList.toggle('visible', canScrollLeft);
+        if (jinglesNext) jinglesNext.classList.toggle('visible', canScrollRight);
+        jinglesWrap.classList.toggle('can-scroll-left', canScrollLeft);
+        jinglesWrap.classList.toggle('can-scroll-right', canScrollRight);
+    }
+
+    function scrollJingles(direction) {
+        if (!jinglesGrid) return;
+        var card = jinglesGrid.querySelector('.jingle-card');
+        var cardWidth = card ? card.offsetWidth + 16 : 400;
+        jinglesGrid.scrollBy({
+            left: direction === 'next' ? cardWidth : -cardWidth,
+            behavior: 'smooth'
+        });
+    }
+
+    if (jinglesGrid) {
+        jinglesGrid.addEventListener('scroll', updateJinglesScroll);
+        window.addEventListener('resize', updateJinglesScroll);
+    }
+    if (jinglesPrev) {
+        jinglesPrev.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            scrollJingles('prev');
+        });
+    }
+    if (jinglesNext) {
+        jinglesNext.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            scrollJingles('next');
+        });
+    }
+    setTimeout(updateJinglesScroll, 300);
+
+    // Attach click to all jingle cards
+    document.querySelectorAll('.jingle-card[data-yt]').forEach(function(card) {
+        card.addEventListener('click', function() {
+            var videoId = this.dataset.yt;
+            if (videoId) openJinglePopup(videoId);
+        });
+    });
+
+    if (jinglePopupClose) jinglePopupClose.addEventListener('click', closeJinglePopup);
+    if (jinglePopupBackdrop) jinglePopupBackdrop.addEventListener('click', closeJinglePopup);
+
+    document.addEventListener('keydown', function(e) {
+        if (jinglePopup && jinglePopup.classList.contains('active') && e.key === 'Escape') {
+            closeJinglePopup();
+        }
+    });
+
+    // ================================================
+    // 6g. NEWS — Data-driven with Load More
+    // ================================================
+    //
+    // HOW TO ADD NEWS:
+    // Simply add new entries to the newsData array below (newest first).
+    // Each entry: { month, year, labelText, labelClass, labelIcon, title, desc, url, metas: [{icon,text}] }
+    // labelClass options: '' (release/green), 'milestone' (gold), 'press' (purple), 'collab' (rose)
+    //
+    var newsData = [
+        { month: 'Sep', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra — The Source',
+          desc: 'Press feature highlighting Surabhi Dashputra and her journey.',
+          url: 'https://thesource.com/2025/09/10/surabhi-dashputra/',
+          metas: [{ icon: 'fa-newspaper', text: 'The Source' }, { icon: 'fa-calendar', text: 'Sep 10, 2025' }] },
+        { month: 'Sep', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Indian artist Surabhi Dashputra to release new works with UK label',
+          desc: 'Press story about upcoming releases with a UK label and cultural collaboration.',
+          url: 'https://runwaytimes.com/2025/09/08/indian-artist-surabhi-dashputra-to-release-new-works-with-uk-label-strengthening-cultural-bridges-through-music/',
+          metas: [{ icon: 'fa-newspaper', text: 'Runway Times' }, { icon: 'fa-calendar', text: 'Sep 8, 2025' }] },
+        { month: 'Sep', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra signs multi-song deal with UK indie label Aart Sense Records',
+          desc: 'Press coverage on a multi-song deal signaling a new chapter in global indie music.',
+          url: 'https://musictimes.co.uk/2025/09/02/surabhi-dashputra-signs-multi-song-deal-with-uk-indie-label-aart-sense-records-signaling-a-bold-new-chapter-in-global-indie-music/',
+          metas: [{ icon: 'fa-newspaper', text: 'Music Times (UK)' }, { icon: 'fa-calendar', text: 'Sep 2, 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Top Indian Songs of the Week (24th Aug 2025)',
+          desc: 'Weekly roundup featuring top Indian songs around 24th August 2025.',
+          url: 'https://extragavanza.in/blog/Top-Indian-Songs-of-the-week-24th-August-2025?fbclid=PAZnRzaAMfoK9leHRuA2FlbQIxMQABp9e_cLsgIwp3H-Fc2Z-p1F_6RW2uv_lIlM-hxQImJQFazwVcmR938ykwy4W3_aem_-Pcgue-ONMcy7V0nSS96Zg',
+          metas: [{ icon: 'fa-newspaper', text: 'Extragavanza' }, { icon: 'fa-calendar', text: 'Aug 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra to release her next ghazal “Jism Yaa Rooh”',
+          desc: 'Coverage of Surabhi’s upcoming ghazal release “Jism Yaa Rooh”.',
+          url: 'https://www.indulgexpress.com/culture/music/2025/Aug/14/surabhi-dashputra-to-release-her-next-a-ghazal-jism-yaa-rooh',
+          metas: [{ icon: 'fa-newspaper', text: 'Indulge Express' }, { icon: 'fa-calendar', text: 'Aug 14, 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra will unveil her next musical gem with ghazal “Jism Yaa Rooh”',
+          desc: 'Press feature announcing the upcoming ghazal “Jism Yaa Rooh”.',
+          url: 'https://urbanasian.com/entertainment/2025/08/surabhi-dashputra-will-unveil-her-next-musical-gem-with-ghazal-jism-yaa-rooh/',
+          metas: [{ icon: 'fa-newspaper', text: 'Urban Asian' }, { icon: 'fa-calendar', text: 'Aug 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra to release her upcoming single “Jism Yaa Rooh” on August 19',
+          desc: 'Announcement post for the upcoming single “Jism Yaa Rooh”.',
+          url: 'https://planetbollywood.com/wp/news/surabhi-dashputra-to-release-her-upcoming-single-jism-yaa-rooh-on-august-19/',
+          metas: [{ icon: 'fa-newspaper', text: 'Planet Bollywood' }, { icon: 'fa-calendar', text: 'Aug 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra to unveil her next musical gem',
+          desc: 'Editorial feature teasing the next musical release.',
+          url: 'https://radioandmusic.com/entertainment/editorial/250813-surabhi-dashputra-unveil-her-next-musical-gem-0',
+          metas: [{ icon: 'fa-newspaper', text: 'Radio & Music' }, { icon: 'fa-calendar', text: 'Aug 13, 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra pens heartfelt lyrics for Arijit Singh’s new release “Dhul Gaye”',
+          desc: 'Press feature on Surabhi’s lyrics for Arijit Singh’s track “Dhul Gaye”.',
+          url: 'https://www.musiculture.in/surabhi-dashputra-pens-heartfelt-lyrics-for-arijit-singhs-new-release-dhul-gaye/',
+          metas: [{ icon: 'fa-newspaper', text: 'Musiculture' }, { icon: 'fa-calendar', text: 'Aug 6, 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra crafts emotional lyrics for Arijit Singh’s “Dhul Gaye”',
+          desc: 'Press coverage highlighting Surabhi’s lyric-writing for “Dhul Gaye”.',
+          url: 'https://loudest.in/independent-music/surabhi-dashputra-crafts-emotional-lyrics-for-arijit-singhs-soul-stirring-track-dhul-gaye-18536.html',
+          metas: [{ icon: 'fa-newspaper', text: 'Loudest.in' }, { icon: 'fa-calendar', text: 'Aug 6, 2025' }] },
+        { month: 'Aug', year: '2025', labelText: 'Press', labelClass: 'press', labelIcon: 'fa-newspaper',
+          title: 'Surabhi Dashputra pens heartfelt lyrics for “Dhul Gaye” — Tellychakkar',
+          desc: 'Press mention of Surabhi’s lyrics for Arijit Singh’s “Dhul Gaye”.',
+          url: 'https://www.tellychakkar.com/tv/tv-news/surabhi-dashputra-pens-heartfelt-lyrics-arijit-singh-s-soulful-new-release-dhul-gaye',
+          metas: [{ icon: 'fa-newspaper', text: 'Tellychakkar' }, { icon: 'fa-calendar', text: 'Aug 2025' }] }
+        // ADD MORE NEWS HERE — just follow the same format above (newest first).
+    ];
+
+    var NEWS_PER_PAGE = 5;
+    var newsShown = 0;
+    var newsTimelineEl = document.getElementById('newsTimeline');
+    var newsCountEl = document.getElementById('newsCount');
+    var newsLoadMoreBtn = document.getElementById('newsLoadMore');
+
+    function renderNews(reset) {
+        if (!newsTimelineEl) return;
+        if (reset) {
+            newsTimelineEl.innerHTML = '';
+            newsShown = 0;
+        }
+
+        function escapeHtml (value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeAttr (value) {
+            return escapeHtml(value).replace(/`/g, '&#96;');
+        }
+
+        var end = Math.min(newsShown + NEWS_PER_PAGE, newsData.length);
+        var fragment = document.createDocumentFragment();
+
+        for (var i = newsShown; i < end; i++) {
+            var item = newsData[i];
+            var newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+
+            // Build metas HTML
+            var metasHtml = '';
+            if (item.metas && item.metas.length) {
+                for (var m = 0; m < item.metas.length; m++) {
+                    metasHtml += '<span><i class="fas ' + escapeAttr(item.metas[m].icon) + '"></i> ' + escapeHtml(item.metas[m].text) + '</span>';
+                }
+            }
+
+            var readHtml = '';
+            if (item.url) {
+                readHtml =
+                    '<div class="news-actions">' +
+                        '<a class="news-read" href="' + escapeAttr(item.url) + '" target="_blank" rel="noopener">' +
+                            'Read Article <i class="fas fa-arrow-up-right-from-square"></i>' +
+                        '</a>' +
+                    '</div>';
+            }
+
+            newsItem.innerHTML =
+                '<div class="news-date-col">' +
+                    '<div class="news-date-badge">' +
+                        '<span class="nd-month">' + escapeHtml(item.month) + '</span>' +
+                        '<span class="nd-year">' + escapeHtml(item.year) + '</span>' +
+                    '</div>' +
+                    '<div class="news-line"></div>' +
+                '</div>' +
+                '<div class="news-content">' +
+                    '<div class="news-card">' +
+                        '<span class="news-label ' + item.labelClass + '">' +
+                            '<i class="fas ' + escapeAttr(item.labelIcon) + '"></i> ' + escapeHtml(item.labelText) +
+                        '</span>' +
+                        '<h3>' + escapeHtml(item.title) + '</h3>' +
+                        '<p>' + escapeHtml(item.desc) + '</p>' +
+                        '<div class="news-meta">' + metasHtml + '</div>' +
+                        readHtml +
+                    '</div>' +
+                '</div>';
+
+            fragment.appendChild(newsItem);
+        }
+
+        newsTimelineEl.appendChild(fragment);
+        newsShown = end;
+
+        // Update counter
+        if (newsCountEl) {
+            newsCountEl.textContent = 'Showing ' + newsShown + ' of ' + newsData.length + ' updates';
+        }
+
+        // Toggle Load More button
+        if (newsLoadMoreBtn) {
+            if (newsShown >= newsData.length) {
+                newsLoadMoreBtn.classList.add('hidden');
+            } else {
+                newsLoadMoreBtn.classList.remove('hidden');
+            }
+        }
+    }
+
+    // Load More button
+    if (newsLoadMoreBtn) {
+        newsLoadMoreBtn.addEventListener('click', function() {
+            renderNews(false);
+        });
+    }
+
+    // Initialize news
+    renderNews(true);
+
+    // ================================================
+    // 6d. YOUTUBE SCROLL NAVIGATION
+    // ================================================
+    const ytGrid = document.getElementById('ytGrid');
+    const ytPrev = document.querySelector('.yt-prev');
+    const ytNext = document.querySelector('.yt-next');
+
+    function scrollYouTube(direction) {
+        if (!ytGrid) return;
+        // Scroll by the width of one video card + gap
+        const card = ytGrid.querySelector('.yt-video-card');
+        const cardWidth = card ? card.offsetWidth + 24 : 400;
+
+        ytGrid.scrollBy({
+            left: direction === 'next' ? cardWidth : -cardWidth,
+            behavior: 'smooth'
+        });
+    }
+
+    if (ytPrev) {
+        ytPrev.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            scrollYouTube('prev');
+        });
+    }
+    if (ytNext) {
+        ytNext.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            scrollYouTube('next');
+        });
+    }
+
+    // Keyboard navigation for YouTube grid
+    if (ytGrid) {
+        ytGrid.setAttribute('tabindex', '0');
+        ytGrid.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                scrollYouTube('prev');
+            }
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                scrollYouTube('next');
+            }
+        });
+    }
 
     // ================================================
     // 7.  ACTIVE NAV LINK HIGHLIGHT
