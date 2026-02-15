@@ -20,10 +20,13 @@
     const navOverlay  = document.getElementById('navOverlay');
     const backTop     = document.getElementById('backTop');
 
-    let userHasInteracted = false;
-    function markUserInteracted () { userHasInteracted = true; }
-    document.addEventListener('pointerdown', markUserInteracted, { capture: true, once: true });
-    document.addEventListener('keydown', markUserInteracted, { capture: true, once: true });
+    // Optional backend base URL (used only for the contact form).
+    // The gallery is frontend-only and loads from `images/gallery/manifest.json`.
+    // You can override by setting `window.BACKEND_BASE_URL` before `script.js` loads.
+    const BACKEND_BASE_URL = (typeof window !== 'undefined' && window.BACKEND_BASE_URL)
+        ? window.BACKEND_BASE_URL
+        : 'http://localhost:3000';
+
 
     // ============================================================
     // Media control (Spotify / Reels / YouTube): play one at a time
@@ -639,124 +642,100 @@
     //
     const reelsData = [
         {
-            video: 'videos/reel1.mp4',
-            title: '✨ New music coming soon! Stay tuned 🎵',
+            video: 'videos/A jewel from Heeramandi \u{1F496}....This captivating thumri, with composition by Mr. Sanjay Leela Bhan.mp4',
+            title: 'A jewel from Heeramandi \u{1F496} This captivating thumri by Mr. Sanjay Leela Bhansali',
             likes: '12.5K',
             comments: '234',
             shares: '89',
             reelUrl: 'https://www.instagram.com/reel/DUNKA1_iMzr/'
         },
         {
-            video: 'videos/reel2.mp4',
-            title: 'Behind the scenes of Dhul Gaye 🎤',
+            video: 'videos/Added to ASR Playlist. Link in bio \u{1F517}\u201CJism Ya Rooh\u201Din the mesmerising voice of @surabhidashputra.mp4',
+            title: 'Added to ASR Playlist \u{1F517} "Jism Ya Rooh" in the mesmerising voice of @surabhidashputra',
             likes: '8.2K',
             comments: '156',
             shares: '45',
             reelUrl: 'https://www.instagram.com/reel/DUIapO5CA3E/'
         },
         {
-            video: 'videos/reel3.mp4',
-            title: 'Studio session vibes 🎹',
+            video: 'videos/Here\u2019s presenting a folk called \u2018Chaiti\u2019 which is typically sung during the month of Phaagun . T.mp4',
+            title: 'Here\u2019s presenting a folk called \u2018Chaiti\u2019 sung during the month of Phaagun',
             likes: '15.1K',
             comments: '312',
             shares: '128',
             reelUrl: 'https://www.instagram.com/reel/DTH_2T0iNHO/'
         },
         {
-            video: 'videos/reel4.mp4',
-            title: 'Live performance highlights 🎭',
+            video: 'videos/I absolutely loved all the songs of the series but \u201CNirmohiya,\u201D holds special place in my heart .mp4',
+            title: 'I absolutely loved all the songs but \u201CNirmohiya\u201D holds a special place in my heart',
             likes: '9.8K',
             comments: '189',
             shares: '67',
             reelUrl: 'https://www.instagram.com/reel/DRRDE4NCKzI/'
         },
         {
-            video: 'videos/reel5.mp4',
-            title: 'Music is life 🎶',
+            video: 'videos/I began \u2018Ghazalish\u0915\u093C\u2019 with two deeply cherished ghazals, originally sung by my guru @sureshwadka.mp4',
+            title: 'I began \u2018Ghazalish\u0915\u093C\u2019 with two deeply cherished ghazals by my guru @sureshwadkar',
             likes: '11.3K',
             comments: '267',
             shares: '94',
             reelUrl: 'https://www.instagram.com/reel/DPtObGIiFId/'
         },
         {
-            video: 'videos/reel6.mp4',
-            title: 'Creative moments in the studio 🎧',
+            video: 'videos/I can hum this melody forever . Just loveee it! #hamriatriyameajaresaveriya.mp4',
+            title: 'I can hum this melody forever. Just loveee it! #hamriatriyameajaresaveriya',
             likes: '7.6K',
             comments: '145',
             shares: '52',
             reelUrl: 'https://www.instagram.com/reel/DPWRRWlCO0T/'
         },
         {
-            video: 'videos/reel7.mp4',
-            title: 'New release dropping soon! 🔥',
+            video: 'videos/Itni si baat pe roothe sajana\u2026. \u201CMore Sajan\u201D is now out on all platforms. Composed and produced.mp4',
+            title: 'Itni si baat pe roothe sajana\u2026 \u201CMore Sajan\u201D is now out on all platforms',
             likes: '14.2K',
             comments: '298',
             shares: '156',
             reelUrl: 'https://www.instagram.com/reel/DPTBu_siBkK/'
         },
         {
-            video: 'videos/reel8.mp4',
-            title: 'Your favorite track 💕',
+            video: 'videos/It\u2019s always a pleasure to sing & write lyrics for Arjuna\u2019s @arjunaharjai songs, given his meticu.mp4',
+            title: 'It\u2019s always a pleasure to sing & write lyrics for Arjuna\u2019s @arjunaharjai songs',
             likes: '10.5K',
             comments: '223',
             shares: '78',
             reelUrl: 'https://www.instagram.com/reel/DN7z2t0jEFD/'
         },
         {
-            video: 'videos/reel9.mp4',
-            title: 'Trending now! 📈',
+            video: 'videos/I\u2019ve been singing this ghazal since childhood, and even today, performing it fills me with joy. .mp4',
+            title: 'I\u2019ve been singing this ghazal since childhood, performing it fills me with joy',
             likes: '18.9K',
             comments: '456',
             shares: '234',
             reelUrl: 'https://www.instagram.com/reel/DNVlYoYMXfB/'
         },
         {
-            video: 'videos/reel10.mp4',
-            title: 'Acoustic cover session 🎸',
+            video: 'videos/Music is a safe kind of high\u2764\uFE0F....On guitars @pranavatrey\u{1F970}#madanmohan #filmanpadh #aapkinazronn.mp4',
+            title: 'Music is a safe kind of high \u2764\uFE0F On guitars @pranavatrey #madanmohan #aapkinazron',
             likes: '6.4K',
             comments: '134',
             shares: '41',
             reelUrl: 'https://www.instagram.com/reel/DNKhi-eMlUZ/'
         },
         {
-            video: 'videos/reel11.mp4',
-            title: 'Live clip from concert 🎤',
+            video: 'videos/There\u2019s something so soothing about singing \u2018Abhi Na Jao\u2019 with @surabhidashputra \u{1F3B6} It felt like.mp4',
+            title: 'There\u2019s something so soothing about singing \u2018Abhi Na Jao\u2019 with @surabhidashputra \u{1F3B6}',
             likes: '8.7K',
             comments: '178',
             shares: '63',
             reelUrl: 'https://www.instagram.com/reel/DM46SUtM-KC/'
         },
         {
-            video: 'videos/reel12.mp4',
-            title: 'Special moment with fans 💖',
+            video: 'videos/\u2018 Ghazalish\u0915\u093C\u2018 remains incomplete without the legendary \u2018Chupke Chupke Raat Din\u2019 echoing through.mp4',
+            title: '\u2018Ghazalish\u0915\u093C\u2019 remains incomplete without the legendary \u2018Chupke Chupke Raat Din\u2019',
             likes: '13.1K',
             comments: '289',
             shares: '112',
             reelUrl: 'https://www.instagram.com/reel/DMXisAZSekc/'
-        },
-        {
-            video: 'videos/reel13.mp4',
-            title: 'Rehearsal time 🎼',
-            likes: '5.9K',
-            comments: '98',
-            shares: '34',
-            reelUrl: 'https://www.instagram.com/reel/DK63wYms7ck/'
-        },
-        {
-            video: 'videos/reel14.mp4',
-            title: 'Music magic ✨🎵',
-            likes: '16.8K',
-            comments: '367',
-            shares: '189',
-            reelUrl: 'https://www.instagram.com/reel/DKRq-Jisah8/'
-        },
-        {
-            video: 'videos/reel15.mp4',
-            title: 'This one went viral! 🚀',
-            likes: '22.4K',
-            comments: '512',
-            shares: '298',
-            reelUrl: 'https://www.instagram.com/reel/DJGlpEKsOGg/'
         }
     ];
 
@@ -772,7 +751,7 @@
                 '<div class="reel-phone-frame">' +
                     '<div class="reel-phone-notch"></div>' +
                     '<video class="reel-video" muted loop playsinline preload="metadata">' +
-                        '<source src="' + reel.video + '" type="video/mp4">' +
+                        '<source src="' + reel.video.split('/').map(function(p,i){return i?encodeURIComponent(p):p;}).join('/') + '" type="video/mp4">' +
                     '</video>' +
                     '<div class="reel-phone-overlay">' +
                         '<div class="reel-phone-actions">' +
@@ -815,36 +794,24 @@
                 if (loader) loader.innerHTML = '<i class="fab fa-instagram"></i><span>Video not found</span>';
             });
 
-	            // Autoplay when visible
+	            // Autoplay when visible (each video plays independently)
 	            const observer = new IntersectionObserver(function(entries) {
 	                entries.forEach(function(entry) {
 	                    if (entry.isIntersecting) {
-	                        if (activeMediaType && activeMediaType !== 'reel') {
-	                            video.pause();
-	                            return;
-	                        }
-	                        setActiveMedia('reel', { video: video });
 	                        video.play().catch(function(){});
 	                    } else {
 	                        video.pause();
 	                    }
 	                });
-	            }, { threshold: 0.5 });
+	            }, { threshold: 0.3 });
 	            observer.observe(card);
 	
-	            // Sound on hover
+	            // Sound on hover (unmute only this video, don't pause others)
 	            card.addEventListener('mouseenter', function() {
-	                setActiveMedia('reel', { video: video });
-	                video.play().catch(function(){});
-	                if (userHasInteracted) {
-	                    video.muted = false;
-	                    if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-	                } else {
-	                    video.muted = true;
-	                    if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-	                }
+	                video.muted = false;
+	                if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
 	            });
-	
+
 	            card.addEventListener('mouseleave', function() {
 	                video.muted = true;
 	                if (soundBtn) soundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -854,11 +821,8 @@
 	            if (soundBtn) {
 	                soundBtn.addEventListener('click', function(e) {
 	                    e.stopPropagation();
-	                    setActiveMedia('reel', { video: video });
-	                    userHasInteracted = true;
 	                    video.muted = !video.muted;
 	                    this.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
-	                    video.play().catch(function(){});
 	                });
 	            }
 
@@ -903,25 +867,23 @@
     // ================================================
     //
     // HOW TO ADD IMAGES:
-    // Just add entries to galleryData below. No sizes needed —
-    // images automatically settle into a beautiful masonry layout.
-    // Each entry: { src, alt, category ('stage'|'studio'|'bts'), tag, icon }
+    // 1) Put images in `images/gallery/` (optionally in `images/gallery/stage|studio|bts/`)
+    // 2) Regenerate `images/gallery/manifest.json` (see `scripts/generate-gallery-manifest.py`)
+    // 3) Refresh the site — no JS edits needed.
     //
+    // Each entry: { src, alt, category ('all'|'stage'|'studio'|'bts'), tag, icon }
+    //
+    // Fallback items (used if backend isn't running)
     var galleryData = [
-        { src: 'images/image1.jpeg',     alt: 'Live Performance',    category: 'stage',  tag: 'Live Performance',  icon: 'fa-microphone'     },
-        { src: 'images/image2.jpeg',     alt: 'Studio Session',      category: 'studio', tag: 'Studio Session',    icon: 'fa-headphones'     },
-        { src: 'images/image3.png',      alt: 'Behind the Scenes',   category: 'bts',    tag: 'Behind the Scenes', icon: 'fa-film'           },
-        { src: 'images/image3 1.jpeg',   alt: 'Concert',             category: 'stage',  tag: 'Concert',           icon: 'fa-music'          },
-        { src: 'images/image3 2.jpeg',   alt: 'Recording Session',   category: 'studio', tag: 'Recording',         icon: 'fa-record-vinyl'   },
-        { src: 'images/image4.jpeg',     alt: 'Candid Moment',       category: 'bts',    tag: 'Candid Moments',    icon: 'fa-star'           },
-        { src: 'images/image5.jpeg',     alt: 'On Stage',            category: 'stage',  tag: 'On Stage',          icon: 'fa-microphone-alt' },
-        { src: 'images/image6.jpeg',     alt: 'Music Production',    category: 'studio', tag: 'Music Production',  icon: 'fa-sliders-h'      }
-        // ADD MORE IMAGES — just follow the format above. No sizing needed!
-        // Example:
-        // { src: 'images/newphoto.jpeg', alt: 'Description', category: 'stage', tag: 'Live Show', icon: 'fa-music' },
+        { src: 'images/gallery/image1.jpeg',  alt: 'Photo', category: 'all', tag: 'Photo', icon: 'fa-camera' },
+        { src: 'images/gallery/image2.jpeg',  alt: 'Photo', category: 'all', tag: 'Photo', icon: 'fa-camera' },
+        { src: 'images/gallery/image3.jpeg',  alt: 'Photo', category: 'all', tag: 'Photo', icon: 'fa-camera' },
+        { src: 'images/gallery/image4.jpeg',  alt: 'Photo', category: 'all', tag: 'Photo', icon: 'fa-camera' }
     ];
 
-    var GALLERY_PER_PAGE = 12;
+    var GALLERY_MANIFEST_URL = 'images/gallery/manifest.json';
+
+    var GALLERY_PER_PAGE = 8;
     var galleryShown = 0;
     var galleryFilter = 'all';
     var galleryGridEl = document.getElementById('galleryGrid');
@@ -934,6 +896,43 @@
     var lbPrev = lightbox ? lightbox.querySelector('.lb-prev') : null;
     var lbNext = lightbox ? lightbox.querySelector('.lb-next') : null;
     var currentLbIndex = 0;
+
+    function iconForCategory(category) {
+        if (category === 'stage') return 'fa-microphone';
+        if (category === 'studio') return 'fa-headphones';
+        if (category === 'bts') return 'fa-film';
+        return 'fa-camera';
+    }
+
+    function titleCase(s) {
+        return String(s || '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .split(' ')
+            .filter(Boolean)
+            .map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); })
+            .join(' ');
+    }
+
+    function labelFromSrc(src) {
+        var name = String(src || '').split('/').pop() || '';
+        name = name.replace(/\.[^.]+$/, '');
+        name = name.replace(/^(stage|studio|bts)[-_ ]+/i, '');
+        name = name.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+        return titleCase(name || 'Photo');
+    }
+
+    function normalizeCategory(category) {
+        category = String(category || '').toLowerCase();
+        return (category === 'stage' || category === 'studio' || category === 'bts') ? category : 'all';
+    }
+
+    function buildGalleryItem(raw) {
+        var src = raw && raw.src ? String(raw.src) : '';
+        var category = normalizeCategory(raw && raw.category ? raw.category : 'all');
+        var label = labelFromSrc(src);
+        return { src: src, alt: label, category: category, tag: label, icon: iconForCategory(category) };
+    }
 
     function getFilteredGallery() {
         if (galleryFilter === 'all') return galleryData;
@@ -1074,8 +1073,61 @@
         });
     });
 
-    // Initialize gallery
+    function updateGalleryFilterVisibility() {
+        var counts = { stage: 0, studio: 0, bts: 0 };
+        galleryData.forEach(function(item) {
+            var c = item && item.category ? item.category : 'all';
+            if (counts[c] != null) counts[c] += 1;
+        });
+
+        filterBtns.forEach(function(btn) {
+            var f = btn && btn.dataset ? btn.dataset.filter : '';
+            if (!f || f === 'all') return;
+            btn.style.display = counts[f] ? '' : 'none';
+        });
+
+        if (galleryFilter !== 'all' && !counts[galleryFilter]) {
+            galleryFilter = 'all';
+            filterBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.filter === 'all'); });
+        }
+    }
+
+    async function loadGalleryFromManifest() {
+        try {
+            var resp = await fetch(GALLERY_MANIFEST_URL, { cache: 'no-store' });
+            if (!resp.ok) throw new Error('Gallery manifest failed: ' + resp.status);
+
+            var data = await resp.json();
+            var list = [];
+            if (Array.isArray(data)) {
+                list = data;
+            } else if (data && Array.isArray(data.images)) {
+                list = data.images;
+            }
+
+            galleryData = list
+                .map(function(item) {
+                    if (typeof item === 'string') {
+                        var src = item.indexOf('/') >= 0 ? item : ('images/gallery/' + item);
+                        return buildGalleryItem({ src: src, category: 'all' });
+                    }
+                    return buildGalleryItem(item);
+                })
+                .filter(function(x) { return x && x.src; });
+
+            updateGalleryFilterVisibility();
+            renderGallery(true);
+        } catch (e) {
+            updateGalleryFilterVisibility();
+            renderGallery(true);
+            try { console.warn('[gallery] Using fallback data:', e && e.message ? e.message : e); } catch (_) {}
+        }
+    }
+
+    // Initialize gallery (fallback first, then backend if available)
+    updateGalleryFilterVisibility();
     renderGallery(true);
+    loadGalleryFromManifest();
 
     // ================================================
     // 6f. FILMS TABS — Films / TV Toggle + Scroll
@@ -1481,7 +1533,8 @@
     // 8.  CONTACT FORM HANDLER (SMTP Backend)
     // ================================================
     // Backend server must be running: cd backend && npm start
-    const API_URL = 'http://localhost:3000/api/contact';
+    const API_URL = BACKEND_BASE_URL + '/api/contact';
+    const API_FALLBACK_URL = 'http://localhost:3000/api/contact';
 
     const contactForm = document.getElementById('contactForm');
     const formSuccess = document.getElementById('formSuccess');
@@ -1513,13 +1566,38 @@
 
             try {
                 // Send to backend API
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+                let response;
+                try {
+                    response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } catch (err) {
+                    if (API_URL !== API_FALLBACK_URL) {
+                        response = await fetch(API_FALLBACK_URL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+                    } else {
+                        throw err;
+                    }
+                }
+
+                if (response && !response.ok && API_URL !== API_FALLBACK_URL) {
+                    response = await fetch(API_FALLBACK_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                }
 
                 const result = await response.json();
 
