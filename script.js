@@ -898,6 +898,8 @@
     var currentLbIndex = 0;
 
     function iconForCategory(category) {
+        if (category === 'live') return 'fa-microphone';
+        if (category === 'recordings') return 'fa-headphones';
         if (category === 'stage') return 'fa-microphone';
         if (category === 'studio') return 'fa-headphones';
         if (category === 'bts') return 'fa-film';
@@ -924,7 +926,10 @@
 
     function normalizeCategory(category) {
         category = String(category || '').toLowerCase();
-        return (category === 'stage' || category === 'studio' || category === 'bts') ? category : 'all';
+        if (category === 'live' || category === 'stage') return 'live';
+        if (category === 'recordings' || category === 'studio') return 'recordings';
+        if (category === 'bts') return 'live';
+        return 'all';
     }
 
     function buildGalleryItem(raw) {
@@ -1074,7 +1079,7 @@
     });
 
     function updateGalleryFilterVisibility() {
-        var counts = { stage: 0, studio: 0, bts: 0 };
+        var counts = { live: 0, recordings: 0 };
         galleryData.forEach(function(item) {
             var c = item && item.category ? item.category : 'all';
             if (counts[c] != null) counts[c] += 1;

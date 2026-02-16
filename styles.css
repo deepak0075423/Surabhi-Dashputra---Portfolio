@@ -91,6 +91,7 @@ nav.scrolled {
 
 /* Logo */
 .logo { display:flex; align-items:center; gap:9px; font-family:var(--head); font-size:1.5rem; font-weight:700; }
+.logo-img { height:40px; width:auto; object-fit:contain; }
 .logo-sym { color:var(--gold); }
 
 /* Links */
@@ -274,6 +275,24 @@ nav.scrolled {
 .n14{left:20%; bottom:-14%; animation-delay:-1s;  animation-duration:17.8s; font-size:2.05rem}
 .n15{right:20%;bottom:-18%; animation-delay:-11s; animation-duration:21.8s; font-size:1.6rem}
 .n16{left:50%; bottom:-32%; animation-delay:-22s; animation-duration:26s; font-size:1.85rem}
+
+/* Doubled music bubbles (n17–n32) */
+.n17{left:8%;   bottom:-20%; animation-delay:-3s;  animation-duration:19s; font-size:1.5rem}
+.n18{right:22%; bottom:-16%; animation-delay:-8s;  animation-duration:21s; font-size:2.0rem}
+.n19{left:32%;  bottom:-24%; animation-delay:-14s; animation-duration:18s; font-size:1.3rem}
+.n20{right:6%;  bottom:-18%; animation-delay:-6s;  animation-duration:20s; font-size:1.75rem}
+.n21{left:18%;  bottom:-22%; animation-delay:-11s; animation-duration:23s; font-size:1.45rem}
+.n22{left:55%;  bottom:-26%; animation-delay:-17s; animation-duration:19.5s; font-size:1.65rem}
+.n23{left:68%;  bottom:-14%; animation-delay:-3.5s; animation-duration:22s; font-size:1.2rem}
+.n24{right:32%; bottom:-28%; animation-delay:-14.5s; animation-duration:20.5s; font-size:2.15rem}
+.n25{left:3%;   bottom:-20%; animation-delay:-19s; animation-duration:24s; font-size:1.35rem}
+.n26{right:2%;  bottom:-24%; animation-delay:-9.5s; animation-duration:25s; font-size:1.5rem}
+.n27{left:78%;  bottom:-18%; animation-delay:-16.5s; animation-duration:21.5s; font-size:1.4rem}
+.n28{left:90%;  bottom:-26%; animation-delay:-7.5s; animation-duration:19.2s; font-size:1.55rem}
+.n29{right:48%; bottom:-30%; animation-delay:-21s; animation-duration:26s; font-size:1.1rem}
+.n30{left:25%;  bottom:-16%; animation-delay:-2.5s; animation-duration:18.5s; font-size:1.95rem}
+.n31{right:16%; bottom:-22%; animation-delay:-12.5s; animation-duration:22.5s; font-size:1.7rem}
+.n32{left:45%;  bottom:-28%; animation-delay:-23.5s; animation-duration:27s; font-size:1.9rem}
 
 @keyframes riseNote {
     0%   { transform: translate3d(0, 10vh, 0) rotate(-10deg); opacity:0; }
@@ -603,7 +622,7 @@ nav.scrolled {
     text-overflow:ellipsis;
 }
 
-/* Footer */
+/* Footer — single row: channel info | stats | subscribe */
 .yt-footer {
     display:flex;
     align-items:center;
@@ -613,16 +632,61 @@ nav.scrolled {
     padding:24px 0;
     border-top:1px solid var(--card-bd);
 }
+
+/* Channel info with tagline */
 .yt-channel-info {
     display:flex;
     align-items:center;
     gap:12px;
-    font-size:1.1rem;
-    font-weight:600;
 }
-.yt-channel-info i {
-    font-size:1.8rem;
+.yt-channel-info > i {
+    font-size:2rem;
     color:#ff0000;
+}
+.yt-channel-details {
+    display:flex;
+    flex-direction:column;
+}
+.yt-channel-name {
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--txt);
+}
+.yt-channel-tagline {
+    font-size:.78rem;
+    color:var(--gold);
+    font-weight:500;
+    font-style:italic;
+}
+
+/* YouTube Stats — inline */
+.yt-stats {
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+}
+.yt-stat {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.85rem;
+    color:var(--txt2);
+}
+.yt-stat i {
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,0,0,.12);
+    border-radius:8px;
+    color:#ff0000;
+    font-size:.85rem;
+}
+.yt-stat span {
+    font-weight:600;
+    color:var(--txt);
+    margin-right:3px;
 }
 
 /* YouTube Responsive */
@@ -630,10 +694,13 @@ nav.scrolled {
     .yt-video-card { flex:0 0 320px; }
     .yt-nav { width:40px; height:40px; }
     .yt-scroll { padding:10px 20px 20px; }
-    .yt-footer { flex-direction:column; text-align:center; }
+    .yt-footer { justify-content:center; text-align:center; }
+    .yt-stats { justify-content:center; gap:16px; }
 }
 @media(max-width:600px) {
     .yt-nav { display:none; }
+    .yt-stats { gap:16px; }
+    .yt-stat { font-size:.8rem; }
 }
 @media(max-width:500px) {
     .yt-video-card { flex:0 0 280px; }
@@ -861,13 +928,39 @@ nav.scrolled {
     border-radius:18px;
 }
 
-/* Reels Footer Stats */
+/* Reels channel info with tagline */
+.reels-channel-info {
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.reels-channel-info > i {
+    font-size:2rem;
+    color:#e1306c;
+}
+.reels-channel-details {
+    display:flex;
+    flex-direction:column;
+}
+.reels-channel-name {
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--txt);
+}
+.reels-channel-tagline {
+    font-size:.78rem;
+    color:var(--gold);
+    font-weight:500;
+    font-style:italic;
+}
+
+/* Reels Footer — single row: channel info | stats | follow */
 .reels-footer {
     display:flex;
     align-items:center;
     justify-content:space-between;
     flex-wrap:wrap;
-    gap:24px;
+    gap:20px;
     margin-top:30px;
     padding-top:30px;
     border-top:1px solid var(--card-bd);
@@ -875,30 +968,31 @@ nav.scrolled {
 
 .reels-stats {
     display:flex;
-    gap:32px;
+    gap:24px;
+    flex-wrap:wrap;
 }
 .rstat {
     display:flex;
     align-items:center;
-    gap:10px;
-    font-size:.9rem;
+    gap:8px;
+    font-size:.85rem;
     color:var(--txt2);
 }
 .rstat i {
-    width:36px;
-    height:36px;
+    width:32px;
+    height:32px;
     display:flex;
     align-items:center;
     justify-content:center;
     background:linear-gradient(135deg,rgba(225,48,108,.15),rgba(131,58,180,.15));
-    border-radius:10px;
+    border-radius:8px;
     color:#e1306c;
-    font-size:.95rem;
+    font-size:.85rem;
 }
 .rstat span {
     font-weight:600;
     color:var(--txt);
-    margin-right:4px;
+    margin-right:3px;
 }
 
 .reel-card {
@@ -1053,16 +1147,16 @@ nav.scrolled {
 
 /* Reels Responsive */
 @media(max-width:900px) {
-    .reels-footer { flex-direction:column; text-align:center; }
-    .reels-stats { justify-content:center; }
+    .reels-footer { justify-content:center; text-align:center; }
+    .reels-stats { justify-content:center; gap:16px; }
     .reel-embed-card { flex:0 0 240px; }
     .reels-nav { display:none; }
     .reels-scroll { padding:10px 20px 20px; }
 }
 @media(max-width:500px) {
     .reel-embed-card { flex:0 0 200px; }
-    .reels-stats { gap:16px; flex-wrap:wrap; }
-    .rstat { font-size:.8rem; }
+    .reels-stats { gap:12px; }
+    .rstat { font-size:.78rem; }
 }
 
 /* ============================================================
@@ -1412,9 +1506,11 @@ nav.scrolled {
     z-index:3;
 }
 .gallery-item:hover .gi-accent { opacity:1; height:60px; }
-.gallery-item[data-category="stage"] .gi-accent    { background:var(--rose); }
-.gallery-item[data-category="studio"] .gi-accent   { background:var(--purple); }
-.gallery-item[data-category="bts"] .gi-accent      { background:var(--gold); }
+.gallery-item[data-category="stage"] .gi-accent      { background:var(--rose); }
+.gallery-item[data-category="studio"] .gi-accent     { background:var(--purple); }
+.gallery-item[data-category="bts"] .gi-accent        { background:var(--gold); }
+.gallery-item[data-category="live"] .gi-accent       { background:var(--rose); }
+.gallery-item[data-category="recordings"] .gi-accent { background:var(--purple); }
 
 /* Enhanced Lightbox */
 .gallery-lightbox {
@@ -2499,7 +2595,8 @@ nav.scrolled {
    FOOTER
    ============================================================ */
 footer { position:relative; z-index:1; padding:48px 24px; border-top:1px solid var(--card-bd); text-align:center; }
-.footer-logo { font-family:var(--head); font-size:1.55rem; font-weight:700; margin-bottom:10px; }
+.footer-logo { font-family:var(--head); font-size:1.55rem; font-weight:700; margin-bottom:10px; display:flex; justify-content:center; }
+.footer-logo-img { height:50px; width:auto; object-fit:contain; }
 .footer-desc { color:var(--txt3); font-size:.87rem; margin-bottom:18px; }
 .footer-links { display:flex; justify-content:center; gap:24px; margin-bottom:20px; flex-wrap:wrap; }
 .footer-links a { color:var(--txt3); font-size:.83rem; transition:color .3s; }
