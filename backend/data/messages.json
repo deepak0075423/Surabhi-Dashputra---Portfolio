@@ -1,0 +1,88 @@
+{
+  "messages": [
+    {
+      "id": "2aabae75-cdb2-4fd0-b238-49e428f8a332",
+      "name": "Deepak Pandey",
+      "email": "ppdd5423@gmail.com",
+      "subject": "booking",
+      "message": "asdfghjkl",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "emailSent": true,
+      "emailError": null,
+      "read": true,
+      "createdAt": "2026-02-17T08:46:26.711Z",
+      "updatedAt": "2026-02-18T14:06:03.190Z"
+    },
+    {
+      "id": "665242e9-f7c3-42b8-b5bf-49d4f6d11dc7",
+      "name": "Deepak Pandey",
+      "email": "ppdd5423@gmail.com",
+      "subject": "booking",
+      "message": "asdfghjkl",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "emailSent": false,
+      "emailError": "SMTP not configured",
+      "read": true,
+      "createdAt": "2026-02-17T08:29:46.244Z",
+      "updatedAt": "2026-02-17T08:47:24.737Z"
+    },
+    {
+      "id": "5fb11466-1b58-4245-b172-9ddfd3044c82",
+      "name": "Deepak Pandey",
+      "email": "deep@gmail.com",
+      "subject": "booking",
+      "message": "abcd",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "emailSent": false,
+      "emailError": "SMTP not configured",
+      "read": true,
+      "createdAt": "2026-02-17T08:26:33.904Z",
+      "updatedAt": "2026-02-17T08:47:25.562Z"
+    },
+    {
+      "id": "5d814309-8864-4b5d-966f-9ee8a5f4912e",
+      "name": "Deepak Pandey",
+      "email": "ppdd5423@gmail.com",
+      "subject": "booking",
+      "message": "abcd",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "emailSent": false,
+      "emailError": "SMTP not configured",
+      "read": true,
+      "createdAt": "2026-02-17T08:26:20.061Z",
+      "updatedAt": "2026-02-17T08:47:26.446Z"
+    },
+    {
+      "id": "3a4a261f-40ba-4f34-a7bd-1e03dd5f2d27",
+      "name": "Deepak Pandey",
+      "email": "ppdd5423@gmail.com",
+      "subject": "booking",
+      "message": "a",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "emailSent": false,
+      "emailError": "SMTP not configured",
+      "read": true,
+      "createdAt": "2026-02-17T08:23:43.032Z",
+      "updatedAt": "2026-02-17T08:47:29.196Z"
+    },
+    {
+      "id": "7ef6fb45-4c0d-4ac6-b4d0-2eb90326954d",
+      "name": "Deepak Pandey",
+      "email": "ppdd5423@gmail.com",
+      "subject": "collaboration",
+      "message": "abcd",
+      "ip": "::1",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "emailSent": false,
+      "emailError": "SMTP not configured",
+      "read": true,
+      "createdAt": "2026-02-17T08:22:29.990Z",
+      "updatedAt": "2026-02-17T08:47:30.340Z"
+    }
+  ]
+}

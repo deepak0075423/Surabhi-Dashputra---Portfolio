@@ -1,0 +1,55 @@
+{
+  "tag": "<i class=\"fas fa-clapperboard\"></i> Filmography",
+  "title": "Films & TV <span class=\"highlight\">Soundtracks</span>",
+  "subtitle": "Lending soulful vocals to the silver screen and beyond",
+  "tabs": [
+    {
+      "key": "films",
+      "icon": "fas fa-film",
+      "label": "Films"
+    },
+    {
+      "key": "tv",
+      "icon": "fas fa-tv",
+      "label": "TV/Web Series"
+    }
+  ],
+  "cards": [
+    {
+      "title": "Judgementall Hai Kya",
+      "year": "2019",
+      "description": "Surabhi's evocative vocals bring emotion to this psychological thriller's captivating soundtrack.",
+      "genre": "Bollywood Thriller",
+      "image": "images/image4.jpeg",
+      "gradient": "linear-gradient(135deg,#667eea,#764ba2)",
+      "type": "films"
+    },
+    {
+      "title": "Titoo MBA",
+      "year": "Hindi",
+      "description": "Her melodic rendition adds warmth and romance to this heartfelt cinematic story.",
+      "genre": "Hindi Cinema",
+      "image": "images/image5.jpeg",
+      "gradient": "linear-gradient(135deg,#f093fb,#f5576c)",
+      "type": "films"
+    },
+    {
+      "title": "DHAAGE",
+      "year": "Classic",
+      "description": "Contributing to the legacy soundtrack of this beloved film, showcasing her vocal versatility.",
+      "genre": "Bollywood Classic",
+      "image": "images/image6.jpeg",
+      "gradient": "linear-gradient(135deg,#4facfe,#00f2fe)",
+      "type": "films"
+    },
+    {
+      "title": "P.O.W. – Bandi Yuddh Ke",
+      "year": "Series",
+      "description": "Captivating title tracks and background scores that set the tone for episodic storytelling.",
+      "genre": "Web Series",
+      "image": "images/image7.jpeg",
+      "gradient": "",
+      "type": "tv"
+    }
+  ]
+}

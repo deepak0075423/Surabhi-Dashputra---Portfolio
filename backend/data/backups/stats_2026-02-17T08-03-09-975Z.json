@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "icon": "fas fa-headphones",
+      "target": "600",
+      "suffix": "K+",
+      "label": "Monthly Listeners"
+    },
+    {
+      "icon": "fas fa-play-circle",
+      "target": "2.6",
+      "suffix": "M+",
+      "label": "Total Streams"
+    },
+    {
+      "icon": "fas fa-film",
+      "target": "3",
+      "suffix": "",
+      "label": "Film Soundtracks"
+    },
+    {
+      "icon": "fas fa-music",
+      "target": "10",
+      "suffix": "+",
+      "label": "Original Releases"
+    }
+  ]
+}

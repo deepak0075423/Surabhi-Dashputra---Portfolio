@@ -1,0 +1,39 @@
+{
+  "badge": "✦ Singer · Content Creator · Musician",
+  "firstName": "Surabhi",
+  "lastName": "Dashputra",
+  "subheading": "Crafting soulful melodies that resonate across borders.",
+  "spotifyListeners": "60,000+",
+  "heroImage": "images/Screenshot-2026-02-17-at-12.33.02AM-mlqaesyl.png",
+  "ctaButtons": [
+    {
+      "label": "Listen on Spotify",
+      "url": "https://open.spotify.com/artist/5OAB0WGU0xp8UY2lihPD3F",
+      "icon": "fab fa-spotify",
+      "class": "btn-spotify"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@surabhidashputra",
+      "icon": "fab fa-youtube",
+      "class": "btn-yt"
+    }
+  ],
+  "socialLinks": [
+    {
+      "url": "https://www.instagram.com/surabhidashputra/",
+      "icon": "fab fa-instagram",
+      "label": "Instagram"
+    },
+    {
+      "url": "https://open.spotify.com/artist/5OAB0WGU0xp8UY2lihPD3F",
+      "icon": "fab fa-spotify",
+      "label": "Spotify"
+    },
+    {
+      "url": "https://www.youtube.com/@surabhidashputra",
+      "icon": "fab fa-youtube",
+      "label": "YouTube"
+    }
+  ]
+}

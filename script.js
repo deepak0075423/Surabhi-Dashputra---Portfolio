@@ -454,22 +454,8 @@
     }
 
     // ================================================
-    // 6.  TRACK BAR FILL  (animate when music section visible)
+    // 6.  (Reserved — bar fill removed)
     // ================================================
-    const tracksSec = document.getElementById('tracksSection');
-
-    if (tracksSec) {
-        const trackObs = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    animateBars();
-                    trackObs.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.25 });
-
-        trackObs.observe(tracksSec);
-    }
 
     // ================================================
     // 6b. PLAYLIST (Independent vs Films & Series)
@@ -1280,13 +1266,16 @@
     }
     setTimeout(updateJinglesScroll, 300);
 
-    // Attach click to all jingle cards
-    document.querySelectorAll('.jingle-card[data-yt]').forEach(function(card) {
-        card.addEventListener('click', function() {
-            var videoId = this.dataset.yt;
-            if (videoId) openJinglePopup(videoId);
+    // Attach click to jingle cards via event delegation (survives CMS re-render)
+    if (jinglesGrid) {
+        jinglesGrid.addEventListener('click', function(e) {
+            var card = e.target.closest('.jingle-card[data-yt]');
+            if (card) {
+                var videoId = card.dataset.yt;
+                if (videoId) openJinglePopup(videoId);
+            }
         });
-    });
+    }
 
     if (jinglePopupClose) jinglePopupClose.addEventListener('click', closeJinglePopup);
     if (jinglePopupBackdrop) jinglePopupBackdrop.addEventListener('click', closeJinglePopup);
@@ -1638,5 +1627,448 @@
             }
         });
     }
+
+    // ============================================================
+    // CMS CONTENT INTEGRATION
+    // Fetches editable content from backend API and updates DOM.
+    // Falls back silently to static HTML if API is unavailable.
+    // ============================================================
+    async function loadCMSContent() {
+        try {
+            var resp = await fetch(BACKEND_BASE_URL + '/api/content');
+            if (!resp.ok) throw new Error('CMS API unavailable');
+            var content = await resp.json();
+
+            if (content.meta) applyMeta(content.meta);
+            if (content.navigation) applyNavigation(content.navigation);
+            if (content.hero) applyHero(content.hero);
+            if (content.about) applyAbout(content.about);
+            if (content.stats) applyStats(content.stats);
+            if (content.music) applyMusic(content.music);
+            if (content.films) applyFilms(content.films);
+            if (content.news) applyNews(content.news);
+            if (content.youtube) applyYouTube(content.youtube);
+            if (content.jingles) applyJingles(content.jingles);
+            if (content.reels) applyReels(content.reels);
+            if (content.gallery) applyGalleryText(content.gallery);
+            if (content.academy) applyAcademy(content.academy);
+            if (content.contact) applyContact(content.contact);
+            if (content.footer) applyFooter(content.footer);
+            if (content.logo) applyLogo(content.logo);
+
+            console.log('[CMS] Content loaded from API');
+        } catch (err) {
+            console.warn('[CMS] Using static content:', err.message);
+        }
+    }
+
+    function applyMeta(d) {
+        if (d.pageTitle) document.title = d.pageTitle;
+        var meta = document.querySelector('meta[name="description"]');
+        if (meta && d.metaDescription) meta.setAttribute('content', d.metaDescription);
+    }
+
+    function applyNavigation(d) {
+        if (!d.links) return;
+        var ul = document.getElementById('navLinks');
+        if (!ul) return;
+        ul.innerHTML = d.links.map(function(l) {
+            return '<li><a href="' + l.href + '">' + l.label + '</a></li>';
+        }).join('');
+    }
+
+    function applyHero(d) {
+        var badge = document.querySelector('.hero .badge');
+        if (badge && d.badge) badge.textContent = d.badge;
+        var fn = document.querySelector('.name-first');
+        if (fn && d.firstName) fn.textContent = d.firstName;
+        var ln = document.querySelector('.name-last');
+        if (ln && d.lastName) ln.textContent = d.lastName;
+        var sub = document.querySelector('.hero-sub');
+        if (sub && d.subheading) {
+            sub.innerHTML = d.subheading + '<br><span class="gold-text">' + (d.spotifyListeners || '') + ' Monthly Listeners</span> on Spotify';
+        }
+        var img = document.querySelector('.hero-placeholder img');
+        if (img && d.heroImage) img.src = d.heroImage;
+        if (d.ctaButtons && d.ctaButtons.length) {
+            var btnsWrap = document.querySelector('.hero-btns');
+            if (btnsWrap) {
+                btnsWrap.innerHTML = d.ctaButtons.map(function(b) {
+                    return '<a href="' + b.url + '" target="_blank" rel="noopener" class="btn ' + b.class + '"><i class="' + b.icon + '"></i> ' + b.label + '</a>';
+                }).join('');
+            }
+        }
+        if (d.socialLinks && d.socialLinks.length) {
+            var socials = document.querySelector('.hero-socials');
+            if (socials) {
+                socials.innerHTML = d.socialLinks.map(function(s) {
+                    return '<a href="' + s.url + '" target="_blank" rel="noopener" aria-label="' + s.label + '"><i class="' + s.icon + '"></i></a>';
+                }).join('');
+            }
+        }
+    }
+
+    function applyAbout(d) {
+        var sec = document.querySelector('#about');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.textContent = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var lead = sec.querySelector('.about-lead');
+        if (lead && d.leadParagraph) lead.innerHTML = d.leadParagraph;
+        var textDiv = sec.querySelector('.about-text');
+        if (textDiv && d.bodyParagraphs) {
+            var ps = textDiv.querySelectorAll('p:not(.about-lead)');
+            d.bodyParagraphs.forEach(function(txt, i) {
+                if (ps[i]) ps[i].innerHTML = txt;
+            });
+        }
+        if (d.tags) {
+            var tagsDiv = sec.querySelector('.tags');
+            if (tagsDiv) {
+                tagsDiv.innerHTML = d.tags.map(function(t) {
+                    return '<span class="tag">' + t + '</span>';
+                }).join('');
+            }
+        }
+        var badge = sec.querySelector('.float-badge');
+        if (badge && d.floatBadge) badge.innerHTML = '<i class="fab fa-spotify"></i> ' + d.floatBadge;
+        var img = sec.querySelector('.about-placeholder img');
+        if (img && d.aboutImage) img.src = d.aboutImage;
+    }
+
+    function applyStats(d) {
+        if (!d.items) return;
+        var stats = document.querySelectorAll('.stats-band .stat');
+        d.items.forEach(function(item, i) {
+            if (!stats[i]) return;
+            var ico = stats[i].querySelector('i');
+            if (ico) ico.className = item.icon;
+            var sn = stats[i].querySelector('.sn');
+            if (sn) {
+                sn.setAttribute('data-target', item.target);
+                sn.setAttribute('data-suffix', item.suffix || '');
+                // Reset animation flag and re-run countUp with new values
+                delete sn.dataset.animated;
+                countUp(sn);
+            }
+            var sl = stats[i].querySelector('.sl');
+            if (sl) sl.textContent = item.label;
+        });
+    }
+
+    function applyMusic(d) {
+        if (d.playlist && d.playlist.length) {
+            playlistData.length = 0;
+            d.playlist.forEach(function(t) {
+                playlistData.push({ id: t.spotifyId || '', name: t.title, category: t.category });
+            });
+            renderPlaylist();
+        }
+        var sec = document.querySelector('#music');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.textContent = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+    }
+
+    function applyFilms(d) {
+        var sec = document.querySelector('#films');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.sec-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        if (d.tabs) {
+            var tabsWrap = sec.querySelector('.films-tabs');
+            if (tabsWrap) {
+                tabsWrap.innerHTML = d.tabs.map(function(t, i) {
+                    return '<button class="ft-btn' + (i === 0 ? ' active' : '') + '" data-tab="' + t.key + '"><i class="' + t.icon + '"></i> ' + t.label + '</button>';
+                }).join('');
+            }
+        }
+        if (d.cards) {
+            var grid = sec.querySelector('.films-grid');
+            if (grid) {
+                grid.innerHTML = d.cards.map(function(c) {
+                    var bg = c.gradient ? 'background:' + c.gradient : (c.image ? 'background-image:url(' + c.image + ')' : '');
+                    return '<div class="film-card visible" data-type="' + (c.type || 'films') + '"' + (c.type === 'tv' ? ' style="display:none"' : '') + '>' +
+                        '<div class="film-top" style="' + bg + '">' +
+                        (c.image ? '<img src="' + c.image + '" alt="' + c.title + '">' : '') +
+                        '<span class="film-yr">' + c.year + '</span>' +
+                        '</div>' +
+                        '<div class="film-body"><h3>' + c.title + '</h3><p>' + c.description + '</p><span class="film-genre">' + c.genre + '</span></div>' +
+                        '</div>';
+                }).join('');
+                // Re-bind tab switching to new cards
+                filmCards = grid.querySelectorAll('.film-card[data-type]');
+            }
+        }
+        // Re-bind tab buttons
+        var newTabBtns = sec.querySelectorAll('.ft-btn');
+        if (newTabBtns.length) {
+            filmTabBtns = newTabBtns;
+            filmTabBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var tab = this.dataset.tab;
+                    filmTabBtns.forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    filmCards.forEach(function(card) {
+                        if (card.dataset.type === tab) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    if (filmsGrid) filmsGrid.scrollLeft = 0;
+                    setTimeout(updateFilmsScroll, 100);
+                });
+            });
+        }
+        setTimeout(updateFilmsScroll, 100);
+    }
+
+    function applyNews(d) {
+        if (d.items) {
+            newsData.length = 0;
+            d.items.forEach(function(n) { newsData.push(n); });
+            newsShown = 0;
+            if (newsTimelineEl) newsTimelineEl.innerHTML = '';
+            renderNews(true);
+        }
+        var sec = document.querySelector('#news');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.sec-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        if (d.perPage) NEWS_PER_PAGE = parseInt(d.perPage, 10) || 5;
+    }
+
+    function applyYouTube(d) {
+        var sec = document.querySelector('#youtube');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.sec-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        if (d.videos) {
+            var grid = document.getElementById('ytGrid');
+            if (grid) {
+                grid.innerHTML = d.videos.map(function(v) {
+                    return '<div class="yt-video-card"><div class="yt-video-wrap">' +
+                        '<iframe src="https://www.youtube.com/embed/' + v.embedId + '?enablejsapi=1" title="' + v.title + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+                        '</div><div class="yt-video-info"><span class="yt-video-title">' + v.title + '</span></div></div>';
+                }).join('');
+            }
+        }
+        var chName = sec.querySelector('.yt-channel-name');
+        if (chName && d.channelName) chName.textContent = d.channelName;
+        var chTag = sec.querySelector('.yt-channel-tagline');
+        if (chTag && d.channelTagline) chTag.textContent = d.channelTagline;
+        if (d.stats) {
+            var statsWrap = sec.querySelector('.yt-stats');
+            if (statsWrap) {
+                statsWrap.innerHTML = d.stats.map(function(s) {
+                    return '<div class="yt-stat"><i class="' + s.icon + '"></i><span>' + s.value + '</span> ' + s.label + '</div>';
+                }).join('');
+            }
+        }
+        var subBtn = sec.querySelector('.btn-yt');
+        if (subBtn && d.subscribeUrl) subBtn.href = d.subscribeUrl;
+    }
+
+    function applyJingles(d) {
+        var sec = document.querySelector('#jingles');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.sec-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        if (d.cards) {
+            var grid = document.getElementById('jinglesGrid');
+            if (grid) {
+                grid.innerHTML = d.cards.map(function(c) {
+                    var tagsHtml = (c.tags || []).map(function(t) {
+                        return '<span><i class="' + t.icon + '"></i> ' + t.label + '</span>';
+                    }).join('');
+                    return '<div class="jingle-card" data-yt="' + c.youtubeId + '">' +
+                        '<div class="jingle-thumb" style="background-image:url(\'https://img.youtube.com/vi/' + c.youtubeId + '/hqdefault.jpg\')">' +
+                        '<div class="jingle-play"><i class="fas fa-play"></i></div></div>' +
+                        '<div class="jingle-info"><span class="jingle-brand"><i class="' + c.brandIcon + '"></i> ' + c.brand + '</span>' +
+                        '<h3>' + c.title + '</h3><p>' + c.description + '</p>' +
+                        '<div class="jingle-tags">' + tagsHtml + '</div></div></div>';
+                }).join('');
+            }
+        }
+    }
+
+    function applyReels(d) {
+        if (d.reels) {
+            reelsData.length = 0;
+            d.reels.forEach(function(r) { reelsData.push(r); });
+            renderReels();
+        }
+        var sec = document.querySelector('#reels');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.sec-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        var chName = sec.querySelector('.reels-channel-name');
+        if (chName && d.channelName) chName.textContent = d.channelName;
+        var chTag = sec.querySelector('.reels-channel-tagline');
+        if (chTag && d.channelTagline) chTag.textContent = d.channelTagline;
+        if (d.stats) {
+            var statsWrap = sec.querySelector('.reels-stats');
+            if (statsWrap) {
+                statsWrap.innerHTML = d.stats.map(function(s) {
+                    return '<div class="rstat"><i class="' + s.icon + '"></i><span>' + s.value + '</span> ' + s.label + '</div>';
+                }).join('');
+            }
+        }
+        var followBtn = sec.querySelector('.btn-insta');
+        if (followBtn && d.followUrl) followBtn.href = d.followUrl;
+    }
+
+    function applyGalleryText(d) {
+        var sec = document.querySelector('#gallery');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.sec-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        if (d.perPage) GALLERY_PER_PAGE = parseInt(d.perPage, 10) || 8;
+        if (d.filterTabs) {
+            var filtersWrap = sec.querySelector('.gallery-filters');
+            if (filtersWrap) {
+                filtersWrap.innerHTML = d.filterTabs.map(function(t, i) {
+                    return '<button class="gf-btn' + (i === 0 ? ' active' : '') + '" data-filter="' + t.filter + '">' + t.label + '</button>';
+                }).join('');
+                // Re-bind filter click events
+                filtersWrap.querySelectorAll('.gf-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        filtersWrap.querySelectorAll('.gf-btn').forEach(function(b) { b.classList.remove('active'); });
+                        btn.classList.add('active');
+                        galleryFilter = btn.dataset.filter;
+                        renderGallery(true);
+                    });
+                });
+            }
+        }
+        // Reload gallery images from CMS data
+        if (d.images && Array.isArray(d.images) && d.images.length > 0) {
+            galleryData = d.images
+                .filter(function(img) { return img && img.src; })
+                .map(function(img) { return buildGalleryItem(img); });
+            galleryFilter = 'all';
+            updateGalleryFilterVisibility();
+            renderGallery(true);
+        }
+    }
+
+    function applyAcademy(d) {
+        var sec = document.querySelector('#academy');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.innerHTML = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var name = sec.querySelector('.academy-info h3');
+        if (name && d.academyName) name.textContent = d.academyName;
+        var desc = sec.querySelector('.academy-info p');
+        if (desc && d.description) desc.textContent = d.description;
+        if (d.features) {
+            var featWrap = sec.querySelector('.academy-features');
+            if (featWrap) {
+                featWrap.innerHTML = d.features.map(function(f) {
+                    return '<span><i class="' + f.icon + '"></i> ' + f.label + '</span>';
+                }).join('');
+            }
+        }
+        var cta = sec.querySelector('.btn-academy');
+        if (cta) {
+            if (d.ctaText) cta.innerHTML = '<i class="fas fa-external-link-alt"></i> ' + d.ctaText;
+            if (d.academyUrl) cta.href = d.academyUrl;
+        }
+        var logo = sec.querySelector('.academy-visual img');
+        if (logo && d.logoImage) logo.src = d.logoImage;
+    }
+
+    function applyContact(d) {
+        var sec = document.querySelector('#contact');
+        if (!sec) return;
+        var tag = sec.querySelector('.sec-tag');
+        if (tag && d.tag) tag.textContent = d.tag;
+        var h2 = sec.querySelector('.sec-head h2');
+        if (h2 && d.title) h2.innerHTML = d.title;
+        var sub = sec.querySelector('.contact-sub');
+        if (sub && d.subtitle) sub.textContent = d.subtitle;
+        if (d.socialCards) {
+            var grid = sec.querySelector('.social-grid');
+            if (grid) {
+                grid.innerHTML = d.socialCards.map(function(c) {
+                    return '<a href="' + c.url + '" target="_blank" rel="noopener" class="social-card ' + c.class + '">' +
+                        '<i class="' + c.icon + '"></i><span class="s-name">' + c.platform + '</span>' +
+                        '<span class="s-handle">' + c.handle + '</span></a>';
+                }).join('');
+            }
+        }
+        var fh = sec.querySelector('.contact-form-wrap h3');
+        if (fh && d.formHeading) fh.innerHTML = '<i class="fas fa-envelope"></i> ' + d.formHeading;
+        var fs = sec.querySelector('.form-sub');
+        if (fs && d.formSubtitle) fs.textContent = d.formSubtitle;
+        if (d.subjectOptions) {
+            var select = sec.querySelector('#subject');
+            if (select) {
+                select.innerHTML = d.subjectOptions.map(function(o) {
+                    return '<option value="' + o.value + '">' + o.label + '</option>';
+                }).join('');
+            }
+        }
+    }
+
+    function applyFooter(d) {
+        var footer = document.querySelector('footer');
+        if (!footer) return;
+        var desc = footer.querySelector('.footer-desc');
+        if (desc && d.description) desc.textContent = d.description;
+        if (d.links) {
+            var linksWrap = footer.querySelector('.footer-links');
+            if (linksWrap) {
+                linksWrap.innerHTML = d.links.map(function(l) {
+                    return '<a href="' + l.href + '">' + l.label + '</a>';
+                }).join('');
+            }
+        }
+        var copy = footer.querySelector('.footer-copy');
+        if (copy && d.copyright) copy.textContent = d.copyright;
+    }
+
+    function applyLogo(d) {
+        if (d.siteLogo) {
+            var navLogo = document.querySelector('#navbar .logo-img');
+            if (navLogo) navLogo.src = d.siteLogo;
+            var footLogo = document.querySelector('footer .footer-logo-img');
+            if (footLogo) footLogo.src = d.siteLogo;
+        }
+    }
+
+    // Load CMS content on page ready
+    loadCMSContent();
 
 })();

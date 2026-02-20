@@ -1,0 +1,27 @@
+{
+  "tag": "<i class=\"fas fa-graduation-cap\"></i> My Academy",
+  "title": "ASM <span class=\"highlight\">Institute</span>",
+  "academyName": "Aesthetics Of Sound And Music",
+  "description": "Welcome to my music academy! ASM Institute is where passion meets profession. Join us to learn from industry experts, master your craft, and transform your musical dreams into reality through personalized training programs.",
+  "features": [
+    {
+      "icon": "fas fa-microphone",
+      "label": "Vocal Training"
+    },
+    {
+      "icon": "fas fa-guitar",
+      "label": "Instruments"
+    },
+    {
+      "icon": "fas fa-sliders-h",
+      "label": "Music Production"
+    },
+    {
+      "icon": "fas fa-users",
+      "label": "Expert Faculty"
+    }
+  ],
+  "ctaText": "Explore Courses",
+  "academyUrl": "https://www.asminstitute.com/abcd",
+  "logoImage": "images/logo/academy-logo.jpeg"
+}

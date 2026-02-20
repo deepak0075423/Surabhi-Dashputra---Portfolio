@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SD Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>SD</h1>
+            <p>Portfolio Admin Panel</p>
+        </div>
+        <form id="loginForm">
+            <div class="field">
+                <label><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="loginUser" placeholder="admin" required autocomplete="username">
+            </div>
+            <div class="field">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="loginPass" placeholder="Password" required autocomplete="current-password">
+            </div>
+            <div class="field">
+                <label><i class="fas fa-server"></i> Backend URL (optional)</label>
+                <div class="api-row">
+                    <input type="url" id="apiBase" placeholder="http://localhost:3000 (only origin, not /admin)">
+                    <button type="button" class="btn-api-test" id="apiTestBtn"><i class="fas fa-plug"></i></button>
+                </div>
+                <div class="hint">If this says HTML/not JSON, another server is running on that port. Use backend origin like http://localhost:3000 or change backend PORT.</div>
+            </div>
+            <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <div class="login-error" id="loginError"></div>
+        </form>
+        <button class="forgot-link" id="forgotToggle">Forgot Password?</button>
+        <form id="resetForm" class="reset-form hidden">
+            <div class="field">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="resetEmail" placeholder="your@email.com" required>
+            </div>
+            <button type="submit" class="btn-reset"><i class="fas fa-paper-plane"></i> Send Reset Link</button>
+            <div class="reset-msg" id="resetMsg"></div>
+        </form>
+    </div>
+</div>
+
+<!-- Reset Password Screen (from email link) -->
+<div class="login-screen hidden" id="resetScreen">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>SD</h1>
+            <p>Reset Your Password</p>
+        </div>
+        <form id="newPassForm">
+            <div class="field">
+                <label><i class="fas fa-lock"></i> New Password</label>
+                <input type="password" id="newPass" placeholder="Min 6 characters" required minlength="6">
+            </div>
+            <div class="field">
+                <label><i class="fas fa-lock"></i> Confirm Password</label>
+                <input type="password" id="confirmPass" placeholder="Re-enter password" required minlength="6">
+            </div>
+            <button type="submit" class="btn-login"><i class="fas fa-check"></i> Reset Password</button>
+            <div class="login-error" id="resetPassError"></div>
+        </form>
+    </div>
+</div>
+
+<!-- Admin Dashboard -->
+<div class="dashboard hidden" id="dashboard">
+    <header class="admin-header">
+        <div class="admin-brand">
+            <span class="brand-logo">SD</span>
+            <span class="brand-text">Admin Panel</span>
+        </div>
+        <div class="admin-actions">
+            <a href="/" target="_blank" class="btn-preview"><i class="fas fa-external-link-alt"></i> View Site</a>
+            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </header>
+    <div class="admin-body">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-sections">
+                <button class="sb-btn active" data-section="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</button>
+                <button class="sb-btn" data-section="messages"><i class="fas fa-inbox"></i> Messages</button>
+                <button class="sb-btn" data-section="meta"><i class="fas fa-code"></i> Meta</button>
+                <button class="sb-btn" data-section="navigation"><i class="fas fa-bars"></i> Navigation</button>
+                <button class="sb-btn" data-section="hero"><i class="fas fa-star"></i> Hero</button>
+                <button class="sb-btn" data-section="about"><i class="fas fa-user"></i> About</button>
+                <button class="sb-btn" data-section="stats"><i class="fas fa-chart-bar"></i> Stats</button>
+                <button class="sb-btn" data-section="music"><i class="fas fa-music"></i> Music</button>
+                <button class="sb-btn" data-section="films"><i class="fas fa-film"></i> Films</button>
+                <button class="sb-btn" data-section="news"><i class="fas fa-newspaper"></i> News</button>
+                <button class="sb-btn" data-section="youtube"><i class="fab fa-youtube"></i> YouTube</button>
+                <button class="sb-btn" data-section="jingles"><i class="fas fa-bullhorn"></i> Jingles</button>
+                <button class="sb-btn" data-section="reels"><i class="fab fa-instagram"></i> Reels</button>
+                <button class="sb-btn" data-section="gallery"><i class="fas fa-images"></i> Gallery</button>
+                <button class="sb-btn" data-section="academy"><i class="fas fa-graduation-cap"></i> Academy</button>
+                <button class="sb-btn" data-section="contact"><i class="fas fa-envelope"></i> Contact</button>
+                <button class="sb-btn" data-section="footer"><i class="fas fa-shoe-prints"></i> Footer</button>
+                <button class="sb-btn" data-section="logo"><i class="fas fa-image"></i> Logo</button>
+            </div>
+            <div class="sidebar-bottom">
+                <button class="sb-btn sb-special" id="changePassBtn"><i class="fas fa-key"></i> Change Password</button>
+            </div>
+        </nav>
+        <main class="content-area" id="contentArea">
+            <div class="content-header">
+                <h2 id="sectionTitle">Select a section</h2>
+                <div class="content-actions">
+                    <button class="btn-save hidden" id="saveBtn"><i class="fas fa-save"></i> Save</button>
+                    <button class="btn-discard hidden" id="discardBtn"><i class="fas fa-undo"></i> Discard</button>
+                </div>
+            </div>
+            <div class="form-area" id="formArea">
+                <p class="placeholder-text">Choose a section from the sidebar to start editing.</p>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal hidden" id="changePassModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+        <h3><i class="fas fa-key"></i> Change Password</h3>
+        <form id="changePassForm">
+            <div class="field">
+                <label>Current Password</label>
+                <input type="password" id="cpCurrent" required>
+            </div>
+            <div class="field">
+                <label>New Password</label>
+                <input type="password" id="cpNew" required minlength="6">
+            </div>
+            <div class="field">
+                <label>Confirm New Password</label>
+                <input type="password" id="cpConfirm" required minlength="6">
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">Save</button>
+                <button type="button" class="btn-discard" id="cpCancel">Cancel</button>
+            </div>
+            <div class="login-error" id="cpError"></div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast hidden" id="toast"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

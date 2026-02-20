@@ -1,0 +1,48 @@
+{
+  "links": [
+    {
+      "href": "#home",
+      "label": "Home"
+    },
+    {
+      "href": "#about",
+      "label": "About"
+    },
+    {
+      "href": "#music",
+      "label": "Popular"
+    },
+    {
+      "href": "#films",
+      "label": "Films"
+    },
+    {
+      "href": "#news",
+      "label": "News"
+    },
+    {
+      "href": "#youtube",
+      "label": "YouTube"
+    },
+    {
+      "href": "#jingles",
+      "label": "Jingles"
+    },
+    {
+      "href": "#reels",
+      "label": "Reels"
+    },
+    {
+      "href": "#gallery",
+      "label": "Photos"
+    },
+    {
+      "href": "#academy",
+      "label": "Academy"
+    },
+    {
+      "href": "#contact",
+      "label": "Connect"
+    }
+  ]
+}

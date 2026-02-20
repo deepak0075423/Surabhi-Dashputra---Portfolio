@@ -1,0 +1,17 @@
+{
+  "tag": "About Me",
+  "title": "The Voice <span class=\"highlight\">Behind the Music</span>",
+  "leadParagraph": "Surabhi Dashputra is a versatile Indian singer and content creator whose soulful voice has captivated over <strong>60,000 monthly listeners</strong> on Spotify.",
+  "bodyParagraphs": [
+    "With a career spanning multiple genres, Surabhi has lent her powerful vocals to iconic Bollywood film soundtracks and released original music that deeply resonates with audiences. Her hit tracks <em>\"Dhul Gaye\"</em> and <em>\"Mangoge Na?\"</em> have collectively crossed <strong>2.6 million streams</strong>.",
+    "Beyond music, Surabhi is a passionate content creator — engaging her growing audience on YouTube and Instagram with authentic storytelling and creative visual content."
+  ],
+  "tags": [
+    "🎤 Vocalist",
+    "🎬 Film Soundtracks",
+    "📱 Content Creator",
+    "🎵 Songwriter"
+  ],
+  "floatBadge": "60K+ Monthly Listeners",
+  "aboutImage": "images/image1.jpeg"
+}

@@ -1,0 +1,50 @@
+{
+  "description": "Surabhi Dashputra — Singer, Content Creator & Musician",
+  "links": [
+    {
+      "href": "#home",
+      "label": "Home"
+    },
+    {
+      "href": "#about",
+      "label": "About"
+    },
+    {
+      "href": "#music",
+      "label": "Popular"
+    },
+    {
+      "href": "#films",
+      "label": "Films & TV"
+    },
+    {
+      "href": "#news",
+      "label": "News"
+    },
+    {
+      "href": "#youtube",
+      "label": "YouTube"
+    },
+    {
+      "href": "#jingles",
+      "label": "Ads & Jingles"
+    },
+    {
+      "href": "#reels",
+      "label": "Reels"
+    },
+    {
+      "href": "#gallery",
+      "label": "Photos"
+    },
+    {
+      "href": "#academy",
+      "label": "Academy"
+    },
+    {
+      "href": "#contact",
+      "label": "Connect"
+    }
+  ],
+  "copyright": "© 2026 Surabhi Dashputra. All rights reserved."
+}

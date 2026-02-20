@@ -1,0 +1,167 @@
+{
+  "tag": "Music",
+  "title": "Spotify <span class=\"highlight\">Playlist</span>",
+  "tabs": [
+    {
+      "filter": "all",
+      "label": "All"
+    },
+    {
+      "filter": "films",
+      "label": "Films & Series"
+    },
+    {
+      "filter": "independent",
+      "label": "Independent"
+    }
+  ],
+  "defaultTrackUri": "3TXjNRh2C9ybqG2ZYDrgh5",
+  "spotifyArtistUrl": "https://open.spotify.com/artist/5OAB0WGU0xp8UY2lihPD3F",
+  "playlist": [
+    {
+      "title": "Manzoor Nahi",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Laage Naahi Man",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Mai Jaanu Na",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Naa Jao",
+      "spotifyId": "7EWlAp5v5iI1wrHJyXIs87",
+      "category": "independent"
+    },
+    {
+      "title": "Tum Yun Roothe",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Balma",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Maanoge Na?",
+      "spotifyId": "4Mpj5odhILzZEMylxorNOs",
+      "category": "independent"
+    },
+    {
+      "title": "Dil Vich Rab",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Na Maanungi",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Rehn De",
+      "spotifyId": "4tefrWaeysumoEvGz23J56",
+      "category": "independent"
+    },
+    {
+      "title": "Qadar Na Jaane",
+      "spotifyId": "0DE5XwVjRp2MT2zQI8brRF",
+      "category": "independent"
+    },
+    {
+      "title": "Gumsum",
+      "spotifyId": "3uGOEFiAtF4e6caYf8JFo6",
+      "category": "independent"
+    },
+    {
+      "title": "Teri Nazar Ka Jaadu",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "More Sajan",
+      "spotifyId": "4ebzARJSxxzlvR7O5vtJ3S",
+      "category": "independent"
+    },
+    {
+      "title": "Dhul Gaye",
+      "spotifyId": "3TXjNRh2C9ybqG2ZYDrgh5",
+      "category": "independent"
+    },
+    {
+      "title": "Jism Ya Rooh",
+      "spotifyId": "5BG231YR8VjjLf37AKpZre",
+      "category": "independent"
+    },
+    {
+      "title": "Sukh Karta",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Aai Mehendi Wali Raat",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Neele Neele Ole Ole",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Ram Kahun",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Kaarigar",
+      "spotifyId": "5AUYlghrRZHKxJ9ni5VIUx",
+      "category": "independent"
+    },
+    {
+      "title": "Tu Hi Hai Channa",
+      "spotifyId": "3U51GW2kvwnOsiHztxk1Zr",
+      "category": "independent"
+    },
+    {
+      "title": "Ludhiyane Waleya",
+      "spotifyId": "",
+      "category": "independent"
+    },
+    {
+      "title": "Bandi Yudh Ke (POW)",
+      "spotifyId": "",
+      "category": "films"
+    },
+    {
+      "title": "Ik Omkar (POW)",
+      "spotifyId": "",
+      "category": "films"
+    },
+    {
+      "title": "Raahiya Ve (POW)",
+      "spotifyId": "5GevKyan5AcdTHuT9ukyNc",
+      "category": "films"
+    },
+    {
+      "title": "Rab Ki Baatein (POW)",
+      "spotifyId": "7rzNbxtI5OIavvltjLiNXC",
+      "category": "films"
+    },
+    {
+      "title": "Aa Chal Ke Tujhe (POW)",
+      "spotifyId": "",
+      "category": "films"
+    },
+    {
+      "title": "Kya Kasoor Tha Amla Ka (Title Track)",
+      "spotifyId": "",
+      "category": "films"
+    }
+  ]
+}

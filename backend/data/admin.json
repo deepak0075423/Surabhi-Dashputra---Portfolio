@@ -1,0 +1,7 @@
+{
+  "username": "admin",
+  "passwordHash": "$2a$10$Dl.6G0Q25cmwEod9Swhg2.wakGqzrvd.yCoR7Vz8wn73vHSDu7NAO",
+  "email": "ppdd5423@gmail.com",
+  "jwtSecret": "da3260fd7924ac409732568429f646a697d5ca1968cb215e314ae69f3cc078db3c007c2f43081a2c3be9602fca17446b",
+  "createdAt": "2026-02-17T05:56:17.236Z"
+}

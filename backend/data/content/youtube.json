@@ -1,0 +1,43 @@
+{
+  "tag": "<i class=\"fab fa-youtube\"></i> Watch Now",
+  "title": "YouTube <span class=\"highlight\">Videos</span>",
+  "subtitle": "Music videos, live performances & exclusive content",
+  "videos": [
+    {
+      "title": "Surabhi Dashputra Showreel",
+      "embedId": "dKnkzcl80jw"
+    },
+    {
+      "title": "Do not miss it!",
+      "embedId": "yr4YkeL__Bo"
+    },
+    {
+      "title": "Sufi Mashup",
+      "embedId": "8ggJNCvnA2s"
+    },
+    {
+      "title": "'Ghazalishक़ Showreel' | Love For Ghazals | Ek Shaam Ghazlon Ke Naam | Surabhi Dashputra",
+      "embedId": "F_yvcXjf0RM"
+    }
+  ],
+  "channelName": "@surabhidashputra",
+  "channelTagline": "Hit Play. Feel the Magic.",
+  "stats": [
+    {
+      "icon": "fas fa-play-circle",
+      "value": "100+",
+      "label": "Videos"
+    },
+    {
+      "icon": "fas fa-eye",
+      "value": "2M+",
+      "label": "Views"
+    },
+    {
+      "icon": "fas fa-users",
+      "value": "10K+",
+      "label": "Subscribers"
+    }
+  ],
+  "subscribeUrl": "https://www.youtube.com/@surabhidashputra"
+}

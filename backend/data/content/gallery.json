@@ -1,0 +1,130 @@
+{
+  "tag": "<i class=\"fas fa-images\"></i> Visual Stories",
+  "title": "Photo <span class=\"highlight\">Gallery</span>",
+  "subtitle": "Moments captured on stage, in the studio & beyond",
+  "filterTabs": [
+    {
+      "filter": "all",
+      "label": "All"
+    },
+    {
+      "filter": "live",
+      "label": "Live Events"
+    },
+    {
+      "filter": "recordings",
+      "label": "Recordings"
+    }
+  ],
+  "perPage": 8,
+  "images": [
+    {
+      "src": "images/gallery/image.jpeg",
+      "category": "live"
+    },
+    {
+      "src": "images/gallery/image1.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image2.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image3.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image4.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image5.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image6.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image7.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image8.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image9.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image10.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image11.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image12.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image13.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image14.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image15.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image16.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image17.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image18.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image19.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image20.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image21.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image22.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image23.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image24.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image25.jpeg",
+      "category": "all"
+    },
+    {
+      "src": "images/gallery/image26.jpeg",
+      "category": "all"
+    }
+  ]
+}

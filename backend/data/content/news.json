@@ -1,0 +1,228 @@
+{
+  "tag": "<i class=\"fas fa-newspaper\"></i> Latest Updates",
+  "title": "In the <span class=\"highlight\">News</span>",
+  "subtitle": "Press features, releases & milestones",
+  "perPage": 5,
+  "items": [
+    {
+      "month": "Sep",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra — The Source",
+      "desc": "Press feature highlighting Surabhi Dashputra and her journey.",
+      "url": "https://thesource.com/2025/09/10/surabhi-dashputra/",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "The Source"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Sep 10, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Sep",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Indian artist Surabhi Dashputra to release new works with UK label",
+      "desc": "Press story about upcoming releases with a UK label and cultural collaboration.",
+      "url": "https://runwaytimes.com/2025/09/08/indian-artist-surabhi-dashputra-to-release-new-works-with-uk-label-strengthening-cultural-bridges-through-music/",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Runway Times"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Sep 8, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Sep",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra signs multi-song deal with UK indie label Aart Sense Records",
+      "desc": "Press coverage on a multi-song deal signaling a new chapter in global indie music.",
+      "url": "https://musictimes.co.uk/2025/09/02/surabhi-dashputra-signs-multi-song-deal-with-uk-indie-label-aart-sense-records-signaling-a-bold-new-chapter-in-global-indie-music/",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Music Times (UK)"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Sep 2, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Top Indian Songs of the Week (24th Aug 2025)",
+      "desc": "Weekly roundup featuring top Indian songs around 24th August 2025.",
+      "url": "https://extragavanza.in/blog/Top-Indian-Songs-of-the-week-24th-August-2025",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Extragavanza"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra to release her next ghazal \"Jism Yaa Rooh\"",
+      "desc": "Coverage of Surabhi’s upcoming ghazal release \"Jism Yaa Rooh\".",
+      "url": "https://www.indulgexpress.com/culture/music/2025/Aug/14/surabhi-dashputra-to-release-her-next-a-ghazal-jism-yaa-rooh",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Indulge Express"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 14, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra will unveil her next musical gem with ghazal \"Jism Yaa Rooh\"",
+      "desc": "Press feature announcing the upcoming ghazal \"Jism Yaa Rooh\".",
+      "url": "https://urbanasian.com/entertainment/2025/08/surabhi-dashputra-will-unveil-her-next-musical-gem-with-ghazal-jism-yaa-rooh/",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Urban Asian"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra to release her upcoming single \"Jism Yaa Rooh\" on August 19",
+      "desc": "Announcement post for the upcoming single \"Jism Yaa Rooh\".",
+      "url": "https://planetbollywood.com/wp/news/surabhi-dashputra-to-release-her-upcoming-single-jism-yaa-rooh-on-august-19/",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Planet Bollywood"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra to unveil her next musical gem",
+      "desc": "Editorial feature teasing the next musical release.",
+      "url": "https://radioandmusic.com/entertainment/editorial/250813-surabhi-dashputra-unveil-her-next-musical-gem-0",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Radio & Music"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 13, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra pens heartfelt lyrics for Arijit Singh’s new release \"Dhul Gaye\"",
+      "desc": "Press feature on Surabhi’s lyrics for Arijit Singh’s track \"Dhul Gaye\".",
+      "url": "https://www.musiculture.in/surabhi-dashputra-pens-heartfelt-lyrics-for-arijit-singhs-new-release-dhul-gaye/",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Musiculture"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 6, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra crafts emotional lyrics for Arijit Singh’s \"Dhul Gaye\"",
+      "desc": "Press coverage highlighting Surabhi’s lyric-writing for \"Dhul Gaye\".",
+      "url": "https://loudest.in/independent-music/surabhi-dashputra-crafts-emotional-lyrics-for-arijit-singhs-soul-stirring-track-dhul-gaye-18536.html",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Loudest.in"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 6, 2025"
+        }
+      ]
+    },
+    {
+      "month": "Aug",
+      "year": "2025",
+      "labelText": "Press",
+      "labelClass": "press",
+      "labelIcon": "fa-newspaper",
+      "title": "Surabhi Dashputra pens heartfelt lyrics for \"Dhul Gaye\" — Tellychakkar",
+      "desc": "Press mention of Surabhi’s lyrics for Arijit Singh’s \"Dhul Gaye\".",
+      "url": "https://www.tellychakkar.com/tv/tv-news/surabhi-dashputra-pens-heartfelt-lyrics-arijit-singh-s-soulful-new-release-dhul-gaye",
+      "metas": [
+        {
+          "icon": "fa-newspaper",
+          "text": "Tellychakkar"
+        },
+        {
+          "icon": "fa-calendar",
+          "text": "Aug 2025"
+        }
+      ]
+    }
+  ]
+}

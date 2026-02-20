@@ -1,0 +1,26 @@
+{
+  "tag": "<i class=\"fas fa-images\"></i> Visual Stories",
+  "title": "Photo <span class=\"highlight\">Gallery</span>",
+  "subtitle": "Moments captured on stage, in the studio & beyond",
+  "filterTabs": [
+    {
+      "filter": "all",
+      "label": "All"
+    },
+    {
+      "filter": "live",
+      "label": "Live Events"
+    },
+    {
+      "filter": "recordings",
+      "label": "Recordings"
+    }
+  ],
+  "perPage": 8,
+  "images": [
+    {
+      "src": "images/gallery/test.jpg",
+      "category": "live"
+    }
+  ]
+}

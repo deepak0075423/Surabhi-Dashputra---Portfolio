@@ -1,0 +1,160 @@
+{
+  "tag": "<i class=\"fas fa-bullhorn\"></i> Commercial Work",
+  "title": "Ad <span class=\"highlight\">Jingles</span>",
+  "subtitle": "Catchy tunes & vocal performances for leading brands",
+  "cards": [
+    {
+      "brand": "Calapor",
+      "brandIcon": "fas fa-building",
+      "title": "Tarana",
+      "description": "Soulful vocal rendition for Calapor's brand campaign, blending melody and emotion.",
+      "tags": [
+        {
+          "icon": "fas fa-tag",
+          "label": "Brand Film"
+        },
+        {
+          "icon": "fas fa-music",
+          "label": "Vocals"
+        }
+      ],
+      "youtubeId": "A27WX3WqRIY"
+    },
+    {
+      "brand": "Judgementall Hai Kya",
+      "brandIcon": "fas fa-film",
+      "title": "Kis Raste Hai Jana",
+      "description": "Evocative vocals for this Bollywood thriller soundtrack featuring Kangana Ranaut & Rajkummar Rao.",
+      "tags": [
+        {
+          "icon": "fas fa-film",
+          "label": "Bollywood"
+        },
+        {
+          "icon": "fas fa-microphone",
+          "label": "Playback"
+        }
+      ],
+      "youtubeId": "JGMoTP38rio"
+    },
+    {
+      "brand": "Saregama Carvaan",
+      "brandIcon": "fas fa-compact-disc",
+      "title": "Sa Re Ga Ma Carvaan",
+      "description": "Vocal performance for Saregama Carvaan's iconic ad campaign directed by Amit Sharma.",
+      "tags": [
+        {
+          "icon": "fas fa-tv",
+          "label": "TV Ad"
+        },
+        {
+          "icon": "fas fa-music",
+          "label": "Jingle"
+        }
+      ],
+      "youtubeId": "JVe06h3ye9U"
+    },
+    {
+      "brand": "MakeMyTrip",
+      "brandIcon": "fas fa-plane",
+      "title": "MakeMyTrip Ad",
+      "description": "Catchy jingle for MakeMyTrip's star-studded campaign featuring Ranveer Singh & Alia Bhatt.",
+      "tags": [
+        {
+          "icon": "fas fa-tv",
+          "label": "TV Ad"
+        },
+        {
+          "icon": "fas fa-star",
+          "label": "Celebrity"
+        }
+      ],
+      "youtubeId": "8y8vvSrIUqs"
+    },
+    {
+      "brand": "Cadbury Dairy Milk",
+      "brandIcon": "fas fa-candy-cane",
+      "title": "Wedding TVC",
+      "description": "Heartwarming vocal track for Cadbury Dairy Milk's wedding-themed television commercial.",
+      "tags": [
+        {
+          "icon": "fas fa-tv",
+          "label": "TVC"
+        },
+        {
+          "icon": "fas fa-heart",
+          "label": "Emotional"
+        }
+      ],
+      "youtubeId": "I-aKwqh3NHM"
+    },
+    {
+      "brand": "Ninjacart",
+      "brandIcon": "fas fa-seedling",
+      "title": "#BetterLives For Every Agri Citizen",
+      "description": "Inspirational vocals for Ninjacart's campaign celebrating India's agricultural community.",
+      "tags": [
+        {
+          "icon": "fas fa-bullhorn",
+          "label": "Campaign"
+        },
+        {
+          "icon": "fas fa-leaf",
+          "label": "Social"
+        }
+      ],
+      "youtubeId": "CXjyevUcgMg"
+    },
+    {
+      "brand": "Original",
+      "brandIcon": "fas fa-music",
+      "title": "Maawan Ni Maawan",
+      "description": "A soulful collaboration with Arjuna Harjai — an emotional track celebrating motherhood.",
+      "tags": [
+        {
+          "icon": "fas fa-microphone",
+          "label": "Feature"
+        },
+        {
+          "icon": "fas fa-heart",
+          "label": "Emotional"
+        }
+      ],
+      "youtubeId": "aH7YeoBJLNs"
+    },
+    {
+      "brand": "Ambuja Cement",
+      "brandIcon": "fas fa-building",
+      "title": "Ambuja Cement Ad",
+      "description": "Vocal performance with lyrics by Gulzar for Ambuja Cement's inspiring brand campaign.",
+      "tags": [
+        {
+          "icon": "fas fa-tv",
+          "label": "TVC"
+        },
+        {
+          "icon": "fas fa-pen-fancy",
+          "label": "Gulzar"
+        }
+      ],
+      "youtubeId": "O4bEbpI5EqI"
+    },
+    {
+      "brand": "Dettol",
+      "brandIcon": "fas fa-shield-alt",
+      "title": "Dettol Dettol Ho",
+      "description": "Catchy jingle for Dettol's ad film — an instantly memorable hook that stays with you.",
+      "tags": [
+        {
+          "icon": "fas fa-tv",
+          "label": "Ad Film"
+        },
+        {
+          "icon": "fas fa-music",
+          "label": "Jingle"
+        }
+      ],
+      "youtubeId": "2L8T5YMc7t8"
+    }
+  ]
+}
