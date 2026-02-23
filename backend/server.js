@@ -70,6 +70,9 @@ const SITE_ROOT = path.resolve(__dirname, '..');
 app.get('/', (_req, res) => res.sendFile(path.join(SITE_ROOT, 'index.html')));
 app.get('/script.js', (_req, res) => res.sendFile(path.join(SITE_ROOT, 'script.js')));
 app.get('/styles.css', (_req, res) => res.sendFile(path.join(SITE_ROOT, 'styles.css')));
+app.get('/favicon.png', (_req, res) => res.sendFile(path.join(SITE_ROOT, 'favicon.png')));
+app.get('/robots.txt', (_req, res) => res.sendFile(path.join(SITE_ROOT, 'robots.txt')));
+app.get('/sitemap.xml', (_req, res) => res.sendFile(path.join(SITE_ROOT, 'sitemap.xml')));
 app.use('/images', express.static(path.join(SITE_ROOT, 'images')));
 app.use('/videos', express.static(path.join(SITE_ROOT, 'videos')));
 
