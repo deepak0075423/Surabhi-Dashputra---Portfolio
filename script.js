@@ -13,6 +13,15 @@
 (function () {
     'use strict';
 
+    // Disable browser scroll restoration so the page always starts at the top
+    // on reload. Without this, the browser restores the previous scroll position
+    // AFTER the IntersectionObserver is set up, leaving sections above the
+    // viewport stuck at opacity:0 (the .reveal hidden state).
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     // ── DOM refs ──
     const navbar      = document.getElementById('navbar');
     const menuToggle  = document.getElementById('menuToggle');
@@ -408,6 +417,15 @@
 
     document.querySelectorAll('.reveal').forEach(function (el) {
         revealObs.observe(el);
+    });
+
+    // Immediately reveal any .reveal elements already scrolled above the viewport
+    // (handles URL hash navigation, e.g. page lands at #films with sections above hidden)
+    document.querySelectorAll('.reveal').forEach(function (el) {
+        if (el.getBoundingClientRect().bottom < 0) {
+            el.classList.add('visible');
+            revealObs.unobserve(el);
+        }
     });
 
     // ================================================
@@ -1178,7 +1196,7 @@
             this.classList.add('active');
 
             filmCards.forEach(function(card) {
-                if (card.dataset.type === tab) {
+                if (card.dataset.type.toLowerCase() === tab.toLowerCase()) {
                     card.style.display = '';
                     card.classList.add('visible');
                 } else {
@@ -1796,7 +1814,8 @@
             if (grid) {
                 grid.innerHTML = d.cards.map(function(c) {
                     var bg = c.gradient ? 'background:' + c.gradient : (c.image ? 'background-image:url(' + c.image + ')' : '');
-                    return '<div class="film-card visible" data-type="' + (c.type || 'films') + '"' + (c.type === 'tv' ? ' style="display:none"' : '') + '>' +
+                    var cardType = (c.type || 'films').toLowerCase();
+                    return '<div class="film-card visible" data-type="' + cardType + '"' + (cardType === 'tv' ? ' style="display:none"' : '') + '>' +
                         '<div class="film-top" style="' + bg + '">' +
                         (c.image ? '<img src="' + c.image + '" alt="' + c.title + '">' : '') +
                         '<span class="film-yr">' + c.year + '</span>' +
@@ -1818,8 +1837,9 @@
                     filmTabBtns.forEach(function(b) { b.classList.remove('active'); });
                     this.classList.add('active');
                     filmCards.forEach(function(card) {
-                        if (card.dataset.type === tab) {
+                        if (card.dataset.type.toLowerCase() === tab.toLowerCase()) {
                             card.style.display = '';
+                            card.classList.add('visible');
                         } else {
                             card.style.display = 'none';
                         }

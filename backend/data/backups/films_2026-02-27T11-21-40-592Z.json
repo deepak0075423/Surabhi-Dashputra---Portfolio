@@ -34,6 +34,15 @@
       "type": "films"
     },
     {
+      "title": "DHAAGE",
+      "year": "Classic",
+      "description": "Contributing to the legacy soundtrack of this beloved film, showcasing her vocal versatility.",
+      "genre": "Bollywood Classic",
+      "image": "images/image6.jpeg",
+      "gradient": "linear-gradient(135deg,#4facfe,#00f2fe)",
+      "type": "films"
+    },
+    {
       "title": "P.O.W. – Bandi Yuddh Ke",
       "year": "Series",
       "description": "Captivating title tracks and background scores that set the tone for episodic storytelling.",
