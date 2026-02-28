@@ -29,12 +29,17 @@
     const navOverlay  = document.getElementById('navOverlay');
     const backTop     = document.getElementById('backTop');
 
-    // Optional backend base URL (used only for the contact form).
-    // The gallery is frontend-only and loads from `images/gallery/manifest.json`.
-    // You can override by setting `window.BACKEND_BASE_URL` before `script.js` loads.
+    // Backend base URL — auto-detected so the same script works on both localhost and production.
+    // On localhost/127.0.0.1 it falls back to :3000 (the dev Express server).
+    // On any other host it uses the current origin (the Express server IS the production host).
+    // Override by setting `window.BACKEND_BASE_URL` before `script.js` loads.
     const BACKEND_BASE_URL = (typeof window !== 'undefined' && window.BACKEND_BASE_URL)
         ? window.BACKEND_BASE_URL
-        : 'http://localhost:3000';
+        : (window.location.hostname === 'localhost' ||
+           window.location.hostname === '127.0.0.1' ||
+           window.location.hostname === '')
+            ? 'http://localhost:' + (window.location.port || '3000')
+            : window.location.origin;
 
 
     // ============================================================
